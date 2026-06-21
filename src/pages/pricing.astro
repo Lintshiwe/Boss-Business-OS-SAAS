@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/sections/Navbar";
+import Pricing from "../components/sections/Pricing";
+import Footer from "../components/sections/Footer";
+import "../styles/global.css";
+---
+
+<Layout title="Pricing — BOSS">
+  <Navbar client:load />
+  <div class="pt-24">
+    <Pricing client:load />
+  </div>
+  <Footer client:load />
+</Layout>

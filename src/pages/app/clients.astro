@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+import PortalList from "../../components/clients/PortalList";
+import "../../styles/global.css";
+---
+
+<Layout title="Client Portals — BOSS">
+  <DashboardLayout client:load>
+    <PortalList client:load />
+  </DashboardLayout>
+</Layout>

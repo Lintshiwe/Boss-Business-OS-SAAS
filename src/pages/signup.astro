@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AuthForm from "../components/auth/AuthForm";
+import "../styles/global.css";
+---
+
+<Layout title="Sign Up — BOSS">
+  <AuthForm client:load mode="signup" />
+</Layout>

@@ -1,0 +1,31 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/sections/Navbar";
+import Hero from "../components/sections/Hero";
+import ProblemSection from "../components/sections/ProblemSection";
+import Features from "../components/sections/Features";
+import ProductDemo from "../components/sections/ProductDemo";
+import WorkflowTimeline from "../components/sections/WorkflowTimeline";
+import ROIStats from "../components/sections/ROIStats";
+import Pricing from "../components/sections/Pricing";
+import Testimonials from "../components/sections/Testimonials";
+import FAQ from "../components/sections/FAQ";
+import FinalCTA from "../components/sections/FinalCTA";
+import Footer from "../components/sections/Footer";
+import "../styles/global.css";
+---
+
+<Layout>
+  <Navbar client:load />
+  <Hero client:load />
+  <ProblemSection client:load />
+  <Features client:load />
+  <ProductDemo client:load />
+  <WorkflowTimeline client:load />
+  <ROIStats client:load />
+  <Pricing client:load />
+  <Testimonials client:load />
+  <FAQ client:load />
+  <FinalCTA client:load />
+  <Footer client:load />
+</Layout>

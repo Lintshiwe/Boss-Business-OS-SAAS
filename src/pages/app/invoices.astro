@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+import InvoiceList from "../../components/invoices/InvoiceList";
+import "../../styles/global.css";
+---
+
+<Layout title="Invoices — BOSS">
+  <DashboardLayout client:load>
+    <InvoiceList client:load />
+  </DashboardLayout>
+</Layout>

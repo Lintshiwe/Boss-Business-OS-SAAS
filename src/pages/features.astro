@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/sections/Navbar";
+import Features from "../components/sections/Features";
+import Footer from "../components/sections/Footer";
+import "../styles/global.css";
+---
+
+<Layout title="Features — BOSS">
+  <Navbar client:load />
+  <div class="pt-24">
+    <Features client:load />
+  </div>
+  <Footer client:load />
+</Layout>

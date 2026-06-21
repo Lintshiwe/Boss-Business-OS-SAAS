@@ -1,0 +1,15 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/sections/Navbar";
+import WorkflowTimeline from "../components/sections/WorkflowTimeline";
+import Footer from "../components/sections/Footer";
+import "../styles/global.css";
+---
+
+<Layout title="Workflow — BOSS">
+  <Navbar client:load />
+  <div class="pt-24">
+    <WorkflowTimeline client:load />
+  </div>
+  <Footer client:load />
+</Layout>

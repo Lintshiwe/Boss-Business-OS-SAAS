@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+import RulesList from "../../components/automation/RulesList";
+import "../../styles/global.css";
+---
+
+<Layout title="Automation — BOSS">
+  <DashboardLayout client:load>
+    <RulesList client:load />
+  </DashboardLayout>
+</Layout>

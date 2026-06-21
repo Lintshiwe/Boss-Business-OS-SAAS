@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+import ProjectsGrid from "../../components/projects/ProjectsGrid";
+import "../../styles/global.css";
+---
+
+<Layout title="Projects — BOSS">
+  <DashboardLayout client:load>
+    <ProjectsGrid client:load />
+  </DashboardLayout>
+</Layout>
