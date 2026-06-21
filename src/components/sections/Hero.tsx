@@ -57,10 +57,10 @@ export default function Hero() {
             variants={fadeUp}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <a href="/maintenance" className="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl transition-all hover:shadow-lg hover:shadow-indigo-200 flex items-center gap-2">
+            <a href="/signup" className="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl transition-all hover:shadow-lg hover:shadow-indigo-200 flex items-center gap-2">
               Start Free Trial — It&apos;s Free <ArrowRight size={18} />
             </a>
-            <a href="/maintenance" className="border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold px-8 py-4 rounded-xl transition-all flex items-center gap-2">
+            <a href="/demo" className="border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold px-8 py-4 rounded-xl transition-all flex items-center gap-2">
               <Play size={18} /> Watch Demo
             </a>
           </motion.div>

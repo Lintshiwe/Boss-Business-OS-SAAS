@@ -78,7 +78,7 @@ export default function Pricing() {
                 <span className="text-gray-500">{plan.period}</span>
               </div>
               <a
-                href="/maintenance"
+                href="/signup"
                 className={`block w-full py-3 rounded-xl font-semibold transition-all mb-8 text-center ${
                   plan.popular
                     ? "bg-primary text-white hover:bg-primary-dark"

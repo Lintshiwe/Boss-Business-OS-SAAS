@@ -6,15 +6,29 @@ import { useInView } from "../../lib/hooks";
 const columns = [
   {
     title: "Product",
-    links: ["Features", "Pricing", "Integrations", "API Docs"],
+    links: [
+      { label: "Features", href: "/features" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Demo", href: "/demo" },
+      { label: "Workflow", href: "/workflow" },
+    ],
   },
   {
     title: "Company",
-    links: ["About Us", "Blog", "Careers", "Contact"],
+    links: [
+      { label: "About Us", href: "/" },
+      { label: "ROI", href: "/roi" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Contact", href: "/signup" },
+    ],
   },
   {
     title: "Legal",
-    links: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
+    links: [
+      { label: "Privacy Policy", href: "/" },
+      { label: "Terms of Service", href: "/" },
+      { label: "Cookie Policy", href: "/" },
+    ],
   },
 ];
 
@@ -42,9 +56,9 @@ export default function Footer() {
               <h4 className="font-semibold text-sm uppercase tracking-wider mb-4 text-gray-300">{col.title}</h4>
               <ul className="space-y-2">
                 {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="/maintenance" className="text-gray-400 text-sm hover:text-white transition-colors">
-                      {link}
+                  <li key={link.label}>
+                    <a href={link.href} className="text-gray-400 text-sm hover:text-white transition-colors">
+                      {link.label}
                     </a>
                   </li>
                 ))}

@@ -33,10 +33,10 @@ export default function FinalCTA() {
               Join hundreds of South African businesses running smoother with BOSS.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="/maintenance" className="bg-white text-primary font-semibold px-8 py-4 rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
+              <a href="/signup" className="bg-white text-primary font-semibold px-8 py-4 rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
                 Start Free Trial <ArrowRight size={18} />
               </a>
-              <a href="/maintenance" className="border border-white/30 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 transition-all flex items-center gap-2">
+              <a href="/signup" className="border border-white/30 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 transition-all flex items-center gap-2">
                 <MessageSquare size={18} /> Talk to Sales
               </a>
             </div>
