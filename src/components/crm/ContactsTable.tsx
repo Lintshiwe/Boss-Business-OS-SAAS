@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search, Plus, Filter, ArrowUpDown, Edit2, Trash2, X, Mail, Phone, Building2 } from "lucide-react";
+import ColorfulAvatar from "../ui/ColorfulAvatar";
 
 interface Contact {
   id: string; name: string; email: string; company: string; phone: string; status: string; stage: string; dealValue: number;
@@ -82,7 +83,7 @@ export default function ContactsTable() {
               <tr key={contact.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-sm font-bold">{contact.name.split(" ").map(n => n[0]).join("")}</div>
+                    <ColorfulAvatar name={contact.name} size="sm" />
                     <div>
                       <p className="text-sm font-medium text-gray-900">{contact.name}</p>
                       <p className="text-xs text-gray-500">{contact.email}</p>

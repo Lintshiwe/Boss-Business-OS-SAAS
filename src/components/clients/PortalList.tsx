@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Clock, Plus, Trash2, Copy, Check, X, Eye, EyeOff } from "lucide-react";
+import ColorfulAvatar from "../ui/ColorfulAvatar";
 
 interface Portal { id: string; client: string; token: string; lastAccessed: string; access: { invoices: boolean; projects: boolean; documents: boolean }; url: string; }
 
@@ -61,7 +62,7 @@ export default function PortalList() {
           <div key={portal.id} className="bg-white rounded-2xl border border-gray-100 p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center font-bold text-sm">{portal.client[0]}</div>
+                <ColorfulAvatar name={portal.client} size="md" />
                 <div>
                   <p className="font-medium text-gray-900">{portal.client}</p>
                   <div className="flex items-center gap-2 text-sm text-gray-500">

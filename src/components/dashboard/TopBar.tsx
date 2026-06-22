@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, Bell, ChevronDown, Settings, LogOut, User, FileText, CheckCircle, Clock, Trash2, Check, FolderKanban, Users, X, Plus } from "lucide-react";
+import ColorfulAvatar from "../ui/ColorfulAvatar";
 
 interface Notification {
   id: string;
@@ -177,7 +178,7 @@ export default function TopBar() {
         {/* User menu */}
         <div className="relative" ref={profileRef}>
           <button onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }} className="flex items-center gap-2 pl-3 pr-2 py-1.5 hover:bg-gray-100 rounded-xl transition-colors">
-            <div className="w-8 h-8 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-sm font-bold ring-2 ring-sky-200">TM</div>
+            <ColorfulAvatar name="Thabo Mokoena" size="sm" ring />
             <div className="hidden sm:block text-left">
               <p className="text-sm font-medium text-gray-900">Thabo M.</p>
               <p className="text-xs text-gray-500">Admin</p>

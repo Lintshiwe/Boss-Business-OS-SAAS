@@ -3,28 +3,23 @@
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { useInView } from "../../lib/hooks";
+import ColorfulAvatar from "../ui/ColorfulAvatar";
 
 const testimonials = [
   {
     quote: "BOSS replaced 5 different tools for me. I save at least 8 hours a week and I've never missed a follow-up.",
     name: "Thabo M.",
     role: "Freelance Developer, Johannesburg",
-    initials: "TM",
-    color: "bg-sky-100 text-sky-700",
   },
   {
     quote: "The client portal alone is worth it. Clients love being able to check project status themselves.",
     name: "Sarah K.",
     role: "Marketing Consultant, Cape Town",
-    initials: "SK",
-    color: "bg-gray-100 text-gray-700",
   },
   {
     quote: "We closed R 200K in new business in our first month using BOSS's pipeline.",
     name: "David N.",
     role: "Agency Founder, Durban",
-    initials: "DN",
-    color: "bg-sky-100 text-sky-700",
   },
 ];
 
@@ -62,9 +57,7 @@ export default function Testimonials() {
               </div>
               <p className="text-gray-700 leading-relaxed mb-6">&ldquo;{t.quote}&rdquo;</p>
               <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold ${t.color} ring-2 ring-white shadow-sm`}>
-                  {t.initials}
-                </div>
+                <ColorfulAvatar name={t.name} size="lg" ring />
                 <div>
                   <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
                   <p className="text-gray-500 text-xs">{t.role}</p>

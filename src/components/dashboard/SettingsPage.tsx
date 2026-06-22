@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Building2, Users, CreditCard, Bell, Shield, Save, Upload, Mail, Globe, Phone, Trash2, Plus, Copy, Check, Eye, EyeOff, Smartphone, Key, Download, FileText, X, AlertTriangle } from "lucide-react";
+import ColorfulAvatar from "../ui/ColorfulAvatar";
 
 // localStorage persistence hook — handles Astro SSR by loading from localStorage after client mount
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
@@ -109,9 +110,9 @@ export default function SettingsPage() {
   const [twoFA, setTwoFA] = useLocalStorage("boss_2fa", false);
   const [showPasskey, setShowPasskey] = useState(false);
   const [showAuthApp, setShowAuthApp] = useState(false);
-  const [totpSecret, setTotpSecret] = useState("");
-  const [totpUri, setTotpUri] = useState("");
-  const [totpQrDataUrl, setTotpQrDataUrl] = useState("");
+  const [totpSecret, setTotpSecret] = useLocalStorage("boss_totp_secret", "");
+  const [totpUri, setTotpUri] = useLocalStorage("boss_totp_uri", "");
+  const [totpQrDataUrl, setTotpQrDataUrl] = useLocalStorage("boss_totp_qr", "");
   const [verifyCode, setVerifyCode] = useState("");
   const [verifyError, setVerifyError] = useState("");
   const [passkeyRegistered, setPasskeyRegistered] = useLocalStorage("boss_passkey", false);
@@ -385,9 +386,7 @@ https://bosssaas.co.za
                 {team.map((member: any) => (
                   <div key={member.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-sm font-bold">
-                        {member.name.split(" ").map((n: string) => n[0]).join("")}
-                      </div>
+                      <ColorfulAvatar name={member.name} size="md" />
                       <div>
                         <p className="text-sm font-medium text-gray-900">{member.name}</p>
                         <p className="text-xs text-gray-500">{member.email}</p>

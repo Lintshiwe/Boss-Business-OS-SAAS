@@ -5,6 +5,7 @@ import {
   LayoutDashboard, Users, FolderKanban, FileText,
   BarChart3, Zap, Settings, LogOut, ChevronLeft, ChevronRight
 } from "lucide-react";
+import ColorfulAvatar from "../ui/ColorfulAvatar";
 import { cn } from "../../lib/utils";
 
 const navItems = [
@@ -65,7 +66,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* User */}
       <div className="p-3 border-t border-sky-800/50">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-sky-500/30 text-sky-200 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ring-2 ring-sky-400/30">TM</div>
+          <ColorfulAvatar name="Thabo Mokoena" size="sm" ring />
           {!collapsed && (
             <div className="min-w-0">
               <p className="text-sm font-medium text-white truncate">Thabo M.</p>
