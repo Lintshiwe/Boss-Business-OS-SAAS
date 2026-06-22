@@ -3,25 +3,28 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Building2, Users, CreditCard, Bell, Shield, Save, Upload, Mail, Globe, Phone, Trash2, Plus, Copy, Check, Eye, EyeOff, Smartphone, Key, Download, FileText, X, AlertTriangle } from "lucide-react";
 
-// localStorage persistence hook
+// localStorage persistence hook — handles Astro SSR by loading from localStorage after client mount
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
+  // Always start with initialValue (works on both server and client hydration)
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const [hydrated, setHydrated] = useState(false);
+
+  // On first client mount, load from localStorage
+  useEffect(() => {
     try {
-      if (typeof window === "undefined") return initialValue;
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
+      if (item !== null) {
+        setStoredValue(JSON.parse(item));
+      }
+    } catch {}
+    setHydrated(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setValue = useCallback((value: T | ((prev: T) => T)) => {
     setStoredValue((prev) => {
       const newValue = value instanceof Function ? value(prev) : value;
       try {
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem(key, JSON.stringify(newValue));
-        }
+        window.localStorage.setItem(key, JSON.stringify(newValue));
       } catch {}
       return newValue;
     });
