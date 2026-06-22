@@ -261,7 +261,7 @@ https://bosssaas.co.za
                 <div className="bg-sky-50 border border-sky-200 rounded-xl p-6 flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-gray-900 text-lg">Studio Plan</p>
-                    <p className="text-sm text-gray-600">R 799/month — Billed monthly</p>
+                    <p className="text-sm text-gray-600">R 799/month - Billed monthly</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="bg-sky-500 text-white text-xs font-medium px-3 py-1 rounded-full">Active</span>

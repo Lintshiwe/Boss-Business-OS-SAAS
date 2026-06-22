@@ -18,7 +18,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     setLoading(true);
 
     try {
-      // Convex auth — placeholder until backend connected
+      // Convex auth - placeholder until backend connected
       window.location.href = "/app";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

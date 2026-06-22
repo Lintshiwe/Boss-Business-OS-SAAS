@@ -29,10 +29,10 @@ const quickActions = [
 ];
 
 const recentActivity = [
-  { id: "1", action: "Invoice paid", detail: "TechCorp — R 48,900", time: "2 min ago", color: "bg-emerald-100 text-emerald-600" },
-  { id: "2", action: "Project updated", detail: "GreenEnergy App — 40% complete", time: "1 hour ago", color: "bg-sky-100 text-sky-600" },
-  { id: "3", action: "New lead", detail: "Lisa van der Berg — FreshFoods", time: "3 hours ago", color: "bg-violet-100 text-violet-600" },
-  { id: "4", action: "Task completed", detail: "Brand guidelines — FreshFoods", time: "5 hours ago", color: "bg-amber-100 text-amber-600" },
+  { id: "1", action: "Invoice paid", detail: "TechCorp - R 48,900", time: "2 min ago", color: "bg-emerald-100 text-emerald-600" },
+  { id: "2", action: "Project updated", detail: "GreenEnergy App - 40% complete", time: "1 hour ago", color: "bg-sky-100 text-sky-600" },
+  { id: "3", action: "New lead", detail: "Lisa van der Berg - FreshFoods", time: "3 hours ago", color: "bg-violet-100 text-violet-600" },
+  { id: "4", action: "Task completed", detail: "Brand guidelines - FreshFoods", time: "5 hours ago", color: "bg-amber-100 text-amber-600" },
 ];
 
 const upcomingDeadlines = [

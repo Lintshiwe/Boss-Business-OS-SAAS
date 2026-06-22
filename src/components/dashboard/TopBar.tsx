@@ -15,8 +15,8 @@ interface Notification {
 
 const initialNotifications: Notification[] = [
   { id: "1", icon: FileText, title: "New invoice INV-005 paid", desc: "Digital Marketing SA paid R 19,750", time: "2 min ago", unread: true, href: "/app/invoices" },
-  { id: "2", icon: CheckCircle, title: "Project milestone completed", desc: "TechCorp redesign — Phase 2 done", time: "1 hour ago", unread: true, href: "/app/projects" },
-  { id: "3", icon: Clock, title: "Invoice INV-003 overdue", desc: "FreshFoods — R 12,500 past due", time: "3 hours ago", unread: false, href: "/app/invoices" },
+  { id: "2", icon: CheckCircle, title: "Project milestone completed", desc: "TechCorp redesign - Phase 2 done", time: "1 hour ago", unread: true, href: "/app/projects" },
+  { id: "3", icon: Clock, title: "Invoice INV-003 overdue", desc: "FreshFoods - R 12,500 past due", time: "3 hours ago", unread: false, href: "/app/invoices" },
   { id: "4", icon: Users, title: "New lead assigned", desc: "Naledi Dlamini from Digital Marketing SA", time: "5 hours ago", unread: false, href: "/app/crm" },
   { id: "5", icon: FolderKanban, title: "Project BuildRight CRM started", desc: "New project created by Sarah", time: "1 day ago", unread: false, href: "/app/projects" },
 ];

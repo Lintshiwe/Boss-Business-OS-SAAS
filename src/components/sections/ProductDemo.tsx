@@ -6,7 +6,7 @@ import { useInView } from "../../lib/hooks";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 const tabs = [
-  { id: 0, label: "Dashboard", image: "/images/Image1.png", caption: "Your command center — see everything at a glance" },
+  { id: 0, label: "Dashboard", image: "/images/Image1.png", caption: "Your command center - see everything at a glance" },
   { id: 1, label: "CRM Pipeline", image: "/images/Image2.png", caption: "Drag-and-drop pipeline management" },
   { id: 2, label: "Invoicing", image: "/images/Image3.png", caption: "Professional invoicing in seconds" },
   { id: 3, label: "Projects", image: "/images/Image4.png", caption: "Track every project and deadline" },

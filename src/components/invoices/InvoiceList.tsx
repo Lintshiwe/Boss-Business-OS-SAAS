@@ -88,7 +88,7 @@ hello@bosssaas.co.za
                 <td className="px-6 py-4 text-sm text-gray-600">{inv.client}</td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">R {inv.amount.toLocaleString()}</td>
                 <td className="px-6 py-4"><span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusStyles[inv.status]}`}>{inv.status}</span></td>
-                <td className="px-6 py-4 text-sm text-gray-500">{inv.dueDate || "—"}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">{inv.dueDate || "-"}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-1">
                     <button onClick={() => setShowPreview(inv)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Preview"><Eye size={16} /></button>

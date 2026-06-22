@@ -92,7 +92,7 @@ export default function ContactsTable() {
                 <td className="px-6 py-4 text-sm text-gray-600">{contact.company}</td>
                 <td className="px-6 py-4"><span className={`text-xs font-medium px-2.5 py-1 rounded-full ${contact.status === "client" ? "bg-emerald-50 text-emerald-600" : contact.status === "prospect" ? "bg-amber-50 text-amber-600" : "bg-gray-100 text-gray-600"}`}>{contact.status}</span></td>
                 <td className="px-6 py-4"><span className={`text-xs font-medium px-2.5 py-1 rounded-full ${stageColors[contact.stage]}`}>{contact.stage}</span></td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900 text-right">{contact.dealValue > 0 ? `R ${contact.dealValue.toLocaleString()}` : "—"}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900 text-right">{contact.dealValue > 0 ? `R ${contact.dealValue.toLocaleString()}` : "-"}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-1">
                     <button onClick={() => openEdit(contact)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"><Edit2 size={14} /></button>
