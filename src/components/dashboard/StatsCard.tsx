@@ -21,7 +21,7 @@ export default function StatsCard({ icon: Icon, label, value, trend, iconBg = "b
         {trend && (
           <span className={cn(
             "text-sm font-medium px-2 py-1 rounded-lg",
-            trend.isPositive ? "text-emerald-600 bg-emerald-50" : "text-red-500 bg-red-50"
+            trend.isPositive ? "text-sky-600 bg-sky-50" : "text-gray-600 bg-gray-100"
           )}>
             {trend.isPositive ? "+" : ""}{trend.value}%
           </span>

@@ -62,8 +62,21 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
         })}
       </nav>
 
+      {/* User */}
+      <div className="p-3 border-t border-sky-800/50">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-sky-500/30 text-sky-200 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ring-2 ring-sky-400/30">TM</div>
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-white truncate">Thabo M.</p>
+              <p className="text-xs text-sky-300/50 truncate">Admin</p>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Bottom */}
-      <div className="p-2 border-t border-sky-800/50 space-y-1">
+      <div className="p-2 space-y-1">
         <a
           href="/app/settings"
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-sky-300/70 hover:text-white hover:bg-sky-800/50 transition-colors"

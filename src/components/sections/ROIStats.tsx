@@ -6,9 +6,9 @@ import { useInView, useCountUp } from "../../lib/hooks";
 
 const stats = [
   { icon: Clock, value: 8, suffix: "+", label: "Hours saved per week", color: "bg-sky-50 text-sky-600" },
-  { icon: TrendingUp, value: 35, suffix: "%", label: "Faster follow-up", color: "bg-violet-50 text-violet-600" },
-  { icon: LayoutGrid, value: 1, suffix: "", label: "Unified workspace", color: "bg-emerald-50 text-emerald-600" },
-  { icon: Banknote, value: 48, suffix: "K", prefix: "R ", label: "Avg. monthly revenue boost", color: "bg-amber-50 text-amber-600" },
+  { icon: TrendingUp, value: 35, suffix: "%", label: "Faster follow-up", color: "bg-gray-100 text-gray-600" },
+  { icon: LayoutGrid, value: 1, suffix: "", label: "Unified workspace", color: "bg-sky-50 text-sky-600" },
+  { icon: Banknote, value: 48, suffix: "K", prefix: "R ", label: "Avg. monthly revenue boost", color: "bg-gray-100 text-gray-600" },
 ];
 
 function StatCard({ icon: Icon, value, suffix, prefix, label, color }: { icon: any; value: number; suffix: string; prefix?: string; label: string; color: string }) {
@@ -31,7 +31,7 @@ export default function ROIStats() {
   const { ref, isInView } = useInView(0.1);
 
   return (
-    <section id="roi" ref={ref} className="py-20 sm:py-28 bg-gradient-to-br from-sky-50 via-white to-violet-50">
+    <section id="roi" ref={ref} className="py-20 sm:py-28 bg-gradient-to-br from-sky-50 via-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

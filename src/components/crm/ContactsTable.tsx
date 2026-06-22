@@ -16,8 +16,8 @@ const initialContacts: Contact[] = [
 ];
 
 const stageColors: Record<string, string> = {
-  new: "bg-gray-100 text-gray-600", contacted: "bg-blue-100 text-blue-600", qualified: "bg-amber-100 text-amber-600",
-  proposal: "bg-purple-100 text-purple-600", won: "bg-emerald-100 text-emerald-600", lost: "bg-red-100 text-red-500",
+  new: "bg-gray-100 text-gray-600", contacted: "bg-sky-100 text-sky-600", qualified: "bg-gray-200 text-gray-700",
+  proposal: "bg-sky-50 text-sky-600", won: "bg-sky-100 text-sky-600", lost: "bg-gray-200 text-gray-600",
 };
 
 export default function ContactsTable() {
@@ -90,13 +90,13 @@ export default function ContactsTable() {
                   </div>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-600">{contact.company}</td>
-                <td className="px-6 py-4"><span className={`text-xs font-medium px-2.5 py-1 rounded-full ${contact.status === "client" ? "bg-emerald-50 text-emerald-600" : contact.status === "prospect" ? "bg-amber-50 text-amber-600" : "bg-gray-100 text-gray-600"}`}>{contact.status}</span></td>
+                <td className="px-6 py-4"><span className={`text-xs font-medium px-2.5 py-1 rounded-full ${contact.status === "client" ? "bg-sky-50 text-sky-600" : contact.status === "prospect" ? "bg-gray-100 text-gray-600" : "bg-gray-100 text-gray-600"}`}>{contact.status}</span></td>
                 <td className="px-6 py-4"><span className={`text-xs font-medium px-2.5 py-1 rounded-full ${stageColors[contact.stage]}`}>{contact.stage}</span></td>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900 text-right">{contact.dealValue > 0 ? `R ${contact.dealValue.toLocaleString()}` : "-"}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-1">
                     <button onClick={() => openEdit(contact)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"><Edit2 size={14} /></button>
-                    <button onClick={() => deleteContact(contact.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                    <button onClick={() => deleteContact(contact.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><Trash2 size={14} /></button>
                   </div>
                 </td>
               </tr>

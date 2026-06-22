@@ -52,7 +52,7 @@ function StepCard({ step, index, isLeft }: { step: typeof steps[0]; index: numbe
           <motion.span
             animate={isInView ? { scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="inline-block mt-3 bg-emerald-100 text-emerald-700 text-xs font-bold px-4 py-1.5 rounded-full"
+            className="inline-block mt-3 bg-sky-100 text-sky-700 text-xs font-bold px-4 py-1.5 rounded-full"
           >
             {step.badge}
           </motion.span>

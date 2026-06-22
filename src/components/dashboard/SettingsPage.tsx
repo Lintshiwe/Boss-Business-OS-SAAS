@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Building2, Users, CreditCard, Bell, Shield, Save, Upload, Mail, Globe, Phone, Trash2, Plus, Copy, Check, Eye, EyeOff, Smartphone, Key, Download, FileText, X } from "lucide-react";
+import { Building2, Users, CreditCard, Bell, Shield, Save, Upload, Mail, Globe, Phone, Trash2, Plus, Copy, Check, Eye, EyeOff, Smartphone, Key, Download, FileText, X, AlertTriangle } from "lucide-react";
 
 const initialTeam = [
   { id: "1", name: "Thabo Mokoena", email: "thabo@bosssaas.co.za", role: "Admin", status: "active" },
@@ -16,8 +16,24 @@ const billingHistory = [
   { id: "INV-2026-004", date: "2026-03-01", amount: 299, status: "paid", plan: "Solo" },
 ];
 
+function Toast({ message, onClose }: { message: string; onClose: () => void }) {
+  return (
+    <div className="fixed bottom-6 right-6 z-50 animate-slideIn">
+      <div className="bg-gray-900 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium">
+        <Check size={16} className="text-sky-400" />
+        {message}
+        <button onClick={onClose} className="ml-2 text-gray-400 hover:text-white"><X size={14} /></button>
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("workspace");
+  const [toast, setToast] = useState<string | null>(null);
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
+
+  // Workspace
   const [workspaceName, setWorkspaceName] = useState("BOSS Digital Agency");
   const [workspaceEmail, setWorkspaceEmail] = useState("hello@bosssaas.co.za");
   const [workspacePhone, setWorkspacePhone] = useState("+27 11 234 5678");
@@ -35,6 +51,10 @@ export default function SettingsPage() {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [invoiceItems, setInvoiceItems] = useState([{ desc: "Studio Plan - Monthly", qty: 1, rate: 799 }]);
   const [invoiceHistory, setInvoiceHistory] = useState(billingHistory);
+  const [currentPlan, setCurrentPlan] = useState("Studio");
+  const [showPlanModal, setShowPlanModal] = useState(false);
+  const [confirmRevoke, setConfirmRevoke] = useState<string | null>(null);
+  const [confirmSignOutAll, setConfirmSignOutAll] = useState(false);
 
   // Notifications
   const [notifPrefs, setNotifPrefs] = useState([
@@ -52,6 +72,13 @@ export default function SettingsPage() {
   const [twoFA, setTwoFA] = useState(false);
   const [showPasskey, setShowPasskey] = useState(false);
   const [showAuthApp, setShowAuthApp] = useState(false);
+  const [totpSecret, setTotpSecret] = useState("");
+  const [totpUri, setTotpUri] = useState("");
+  const [totpQrDataUrl, setTotpQrDataUrl] = useState("");
+  const [verifyCode, setVerifyCode] = useState("");
+  const [verifyError, setVerifyError] = useState("");
+  const [passkeyRegistered, setPasskeyRegistered] = useState(false);
+  const [passkeyError, setPasskeyError] = useState("");
   const [sessions, setSessions] = useState([
     { id: "1", device: "Chrome on Windows", lastActive: "Now", current: true },
     { id: "2", device: "Safari on iPhone", lastActive: "2 hours ago", current: false },
@@ -79,10 +106,12 @@ export default function SettingsPage() {
     setTeam(prev => [...prev, { id: String(Date.now()), name: inviteEmail.split("@")[0], email: inviteEmail, role: inviteRole, status: "invited" }]);
     setInviteEmail("");
     setShowInvite(false);
+    showToast("Invitation sent to " + inviteEmail);
   };
 
   const removeMember = (id: string) => {
     setTeam(prev => prev.filter(m => m.id !== id));
+    showToast("Member removed");
   };
 
   const generateInvoice = () => {
@@ -97,6 +126,7 @@ export default function SettingsPage() {
     setInvoiceHistory(prev => [newInv, ...prev]);
     setShowInvoiceModal(false);
     setInvoiceItems([{ desc: "Studio Plan - Monthly", qty: 1, rate: 799 }]);
+    showToast("Invoice generated successfully");
   };
 
   const downloadInvoice = (inv: typeof billingHistory[0]) => {
@@ -120,18 +150,106 @@ https://bosssaas.co.za
     a.download = `${inv.id}.txt`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast("Invoice downloaded");
   };
 
   const toggleNotifPref = (index: number) => {
     setNotifPrefs(prev => prev.map((p, i) => i === index ? { ...p, on: !p.on } : p));
+    showToast("Notification preference updated");
   };
 
   const revokeSession = (id: string) => {
     setSessions(prev => prev.filter(s => s.id !== id));
+    showToast("Session revoked");
   };
+
+  const saveWorkspace = () => showToast("Workspace settings saved");
+  const updatePassword = () => { setCurrentPw(""); setNewPw(""); showToast("Password updated"); };
+
+  const startAuthAppSetup = async () => {
+    try {
+      const { TOTP, Secret } = await import("otpauth");
+      const secret = new Secret({ size: 20 });
+      const totp = new TOTP({ issuer: "BOSS SaaS", label: workspaceEmail, algorithm: "SHA1", digits: 6, period: 30, secret });
+      setTotpSecret(secret.base32);
+      setTotpUri(totp.toString());
+
+      const QRCode = await import("qrcode");
+      const dataUrl = await QRCode.toDataURL(totp.toString(), { width: 160, margin: 1, color: { dark: "#0f172a", light: "#ffffff" } });
+      setTotpQrDataUrl(dataUrl);
+      setShowAuthApp(true);
+    } catch {
+      showToast("Failed to generate TOTP secret");
+    }
+  };
+
+  const verifyAndEnable2FA = async () => {
+    if (verifyCode.length !== 6) { setVerifyError("Enter a 6-digit code"); return; }
+    try {
+      const { TOTP, Secret } = await import("otpauth");
+      const secret = Secret.fromBase32(totpSecret);
+      const totp = new TOTP({ issuer: "BOSS SaaS", label: workspaceEmail, algorithm: "SHA1", digits: 6, period: 30, secret });
+      const delta = totp.validate({ token: verifyCode, window: 1 });
+      if (delta !== null) {
+        setTwoFA(true);
+        setShowAuthApp(false);
+        setVerifyCode("");
+        setVerifyError("");
+        showToast("Two-factor authentication enabled");
+      } else {
+        setVerifyError("Invalid code. Check your authenticator app and try again.");
+      }
+    } catch {
+      setVerifyError("Verification failed. Please try again.");
+    }
+  };
+
+  const registerPasskey = async () => {
+    setPasskeyError("");
+    try {
+      if (!window.PublicKeyCredential) {
+        setPasskeyError("WebAuthn is not supported in this browser.");
+        return;
+      }
+      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      if (!available) {
+        setPasskeyError("No platform authenticator (fingerprint/face) available on this device.");
+        return;
+      }
+      const challenge = new Uint8Array(32);
+      crypto.getRandomValues(challenge);
+      const userId = new Uint8Array(16);
+      crypto.getRandomValues(userId);
+
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          challenge,
+          rp: { name: "BOSS SaaS", id: window.location.hostname },
+          user: { id: userId, name: workspaceEmail, displayName: workspaceName },
+          pubKeyCredParams: [{ alg: -7, type: "public-key" }, { alg: -257, type: "public-key" }],
+          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+          timeout: 60000,
+        },
+      });
+      if (credential) {
+        setPasskeyRegistered(true);
+        setShowPasskey(false);
+        showToast("Passkey registered successfully");
+      }
+    } catch (err: any) {
+      if (err?.name === "NotAllowedError") {
+        setPasskeyError("Registration was cancelled. Please try again and approve the prompt.");
+      } else {
+        setPasskeyError("Passkey registration failed. Your device may not support it.");
+      }
+    }
+  };
+  const signOutOthers = () => { setSessions(prev => prev.filter(s => s.current)); showToast("All other sessions signed out"); };
+  const saveNotifications = () => showToast("Notification preferences saved");
 
   return (
     <div>
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       <h2 className="text-2xl font-bold font-[family-name:var(--font-heading)] text-gray-900 mb-6">Settings</h2>
 
       <div className="flex gap-6">
@@ -199,7 +317,7 @@ https://bosssaas.co.za
                 </div>
               </div>
               <div className="mt-6 flex justify-end">
-                <button className="bg-sky-500 hover:bg-sky-600 text-white font-medium px-6 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-colors"><Save size={16} /> Save Changes</button>
+                <button onClick={saveWorkspace} className="bg-sky-500 hover:bg-sky-600 text-white font-medium px-6 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-colors"><Save size={16} /> Save Changes</button>
               </div>
             </div>
           )}
@@ -243,7 +361,7 @@ https://bosssaas.co.za
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${member.status === "active" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}>{member.status}</span>
+                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${member.status === "active" ? "bg-sky-50 text-sky-600" : "bg-gray-100 text-gray-600"}`}>{member.status}</span>
                       <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">{member.role}</span>
                       {member.id !== "1" && <button onClick={() => removeMember(member.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>}
                     </div>
@@ -260,12 +378,12 @@ https://bosssaas.co.za
                 <h3 className="text-lg font-semibold text-gray-900 mb-6">Current Plan</h3>
                 <div className="bg-sky-50 border border-sky-200 rounded-xl p-6 flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900 text-lg">Studio Plan</p>
-                    <p className="text-sm text-gray-600">R 799/month - Billed monthly</p>
+                    <p className="font-semibold text-gray-900 text-lg">{currentPlan} Plan</p>
+                    <p className="text-sm text-gray-600">R {currentPlan === "Solo" ? "299" : currentPlan === "Studio" ? "799" : "1,999"}/month - Billed monthly</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="bg-sky-500 text-white text-xs font-medium px-3 py-1 rounded-full">Active</span>
-                    <button className="text-sm text-sky-600 hover:text-sky-700 font-medium">Change Plan</button>
+                    <button onClick={() => setShowPlanModal(true)} className="text-sm text-sky-600 hover:text-sky-700 font-medium">Change Plan</button>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 mt-4">
@@ -279,7 +397,7 @@ https://bosssaas.co.za
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl text-center">
                     <p className="text-xs text-gray-500">YTD spent</p>
-                    <p className="text-sm font-semibold text-gray-900">R {(799 * 6).toLocaleString()}</p>
+                    <p className="text-sm font-semibold text-gray-900">R {(currentPlan === "Solo" ? 299 : currentPlan === "Studio" ? 799 : 1999 * 6).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -309,7 +427,7 @@ https://bosssaas.co.za
                         <td className="py-3 text-sm text-gray-600">{inv.date}</td>
                         <td className="py-3 text-sm text-gray-600">{inv.plan}</td>
                         <td className="py-3 text-sm font-medium text-gray-900">R {inv.amount.toLocaleString()}</td>
-                        <td className="py-3"><span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600">{inv.status}</span></td>
+                        <td className="py-3"><span className="text-xs font-medium px-2.5 py-1 rounded-full bg-sky-50 text-sky-600">{inv.status}</span></td>
                         <td className="py-3 text-right">
                           <button onClick={() => downloadInvoice(inv)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Download">
                             <Download size={16} />
@@ -346,6 +464,41 @@ https://bosssaas.co.za
                   </div>
                 </div>
               )}
+
+              {/* Change Plan Modal */}
+              {showPlanModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowPlanModal(false)}>
+                  <div className="bg-white rounded-2xl p-6 w-full max-w-xl" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-lg font-semibold">Change Plan</h3>
+                      <button onClick={() => setShowPlanModal(false)} className="p-1 hover:bg-gray-100 rounded-lg"><X size={20} /></button>
+                    </div>
+                    <div className="space-y-3">
+                      {[
+                        { name: "Solo", price: "299", features: ["1 user", "Basic CRM", "5 invoices/mo", "Email support"] },
+                        { name: "Studio", price: "799", features: ["5 users", "Full CRM + Invoicing", "Unlimited invoices", "Client portals", "Priority support"] },
+                        { name: "Business", price: "1,999", features: ["Unlimited users", "All modules", "API access", "Custom branding", "Dedicated support"] },
+                      ].map((plan) => (
+                        <div key={plan.name} className={`border rounded-xl p-4 flex items-center justify-between transition-all cursor-pointer ${currentPlan === plan.name ? "border-sky-400 bg-sky-50" : "border-gray-200 hover:border-gray-300"}`}>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-gray-900">{plan.name}</p>
+                              {currentPlan === plan.name && <span className="text-xs bg-sky-500 text-white px-2 py-0.5 rounded-full">Current</span>}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-0.5">R {plan.price}/month</p>
+                            <p className="text-xs text-gray-500 mt-1">{plan.features.join(" · ")}</p>
+                          </div>
+                          {currentPlan !== plan.name && (
+                            <button onClick={() => { setCurrentPlan(plan.name); setShowPlanModal(false); showToast(`Switched to ${plan.name} Plan`); }} className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+                              Switch to {plan.name}
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -366,6 +519,9 @@ https://bosssaas.co.za
                   </div>
                 ))}
               </div>
+              <div className="mt-6 flex justify-end">
+                <button onClick={saveNotifications} className="bg-sky-500 hover:bg-sky-600 text-white font-medium px-6 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-colors"><Save size={16} /> Save Preferences</button>
+              </div>
             </div>
           )}
 
@@ -381,7 +537,7 @@ https://bosssaas.co.za
                   </div>
                   <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder="New password" className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-200" />
                 </div>
-                <button className="mt-4 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-medium">Update Password</button>
+                <button onClick={updatePassword} className="mt-4 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-medium">Update Password</button>
               </div>
 
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -395,36 +551,73 @@ https://bosssaas.co.za
                         <p className="text-xs text-gray-500">Use Google Authenticator or Authy</p>
                       </div>
                     </div>
-                    <button onClick={() => setShowAuthApp(!showAuthApp)} className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${twoFA ? "bg-emerald-50 text-emerald-600" : "bg-sky-500 text-white hover:bg-sky-600"}`}>
+                    <button onClick={() => twoFA ? null : startAuthAppSetup()} className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${twoFA ? "bg-sky-50 text-sky-600" : "bg-sky-500 text-white hover:bg-sky-600"}`}>
                       {twoFA ? "Enabled" : "Enable"}
                     </button>
                   </div>
                   {showAuthApp && (
-                    <div className="bg-sky-50 border border-sky-200 rounded-xl p-4">
-                      <p className="text-sm text-gray-700 mb-3">Scan this QR code with your authenticator app:</p>
-                      <div className="w-40 h-40 bg-white border-2 border-dashed border-sky-300 rounded-xl flex items-center justify-center mb-3">
-                        <p className="text-xs text-gray-400 text-center">QR Code<br/>Placeholder</p>
+                    <div className="bg-sky-50 border border-sky-200 rounded-xl p-5">
+                      <p className="text-sm font-medium text-gray-700 mb-3">Step 1: Scan this QR code with your authenticator app</p>
+                      <div className="flex gap-6 items-start">
+                        <div className="bg-white p-3 rounded-xl border border-sky-200">
+                          {totpQrDataUrl ? (
+                            <img src={totpQrDataUrl} alt="TOTP QR Code" className="w-40 h-40" />
+                          ) : (
+                            <div className="w-40 h-40 flex items-center justify-center text-xs text-gray-400">Generating...</div>
+                          )}
+                        </div>
+                        <div className="flex-1 space-y-3">
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">Or enter this secret manually:</p>
+                            <div className="bg-white border border-sky-200 rounded-lg px-3 py-2 flex items-center gap-2">
+                              <code className="text-sm font-mono text-gray-800 flex-1 break-all">{totpSecret}</code>
+                              <button onClick={() => { navigator.clipboard.writeText(totpSecret); showToast("Secret copied"); }} className="text-sky-500 hover:text-sky-600 flex-shrink-0"><Copy size={14} /></button>
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">Step 2: Enter the 6-digit code from your app</p>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                inputMode="numeric"
+                                maxLength={6}
+                                value={verifyCode}
+                                onChange={(e) => { setVerifyCode(e.target.value.replace(/\D/g, "")); setVerifyError(""); }}
+                                placeholder="000000"
+                                className="w-32 px-3 py-2 border border-sky-200 rounded-lg text-sm font-mono text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-sky-300"
+                              />
+                              <button onClick={verifyAndEnable2FA} className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Verify & Enable</button>
+                            </div>
+                            {verifyError && <p className="text-xs text-red-500 mt-1">{verifyError}</p>}
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-xs text-gray-500">Or enter manually: <code className="bg-white px-2 py-0.5 rounded">JBSWY3DPEHPK3PXP</code></p>
-                      <button onClick={() => { setTwoFA(true); setShowAuthApp(false); }} className="mt-3 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-medium">Verify & Enable</button>
                     </div>
                   )}
 
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-violet-100 text-violet-600 rounded-xl flex items-center justify-center"><Key size={18} /></div>
+                      <div className="w-10 h-10 bg-gray-100 text-gray-600 rounded-xl flex items-center justify-center"><Key size={18} /></div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">Passkey</p>
                         <p className="text-xs text-gray-500">Use fingerprint or face recognition</p>
                       </div>
                     </div>
-                    <button onClick={() => setShowPasskey(!showPasskey)} className="text-xs font-medium px-3 py-1.5 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition-colors">Set Up</button>
+                    {passkeyRegistered ? (
+                      <span className="text-xs bg-sky-50 text-sky-600 px-3 py-1.5 rounded-lg font-medium">Registered</span>
+                    ) : (
+                      <button onClick={() => { setShowPasskey(!showPasskey); setPasskeyError(""); }} className="text-xs font-medium px-3 py-1.5 rounded-lg bg-sky-500 text-white hover:bg-sky-600 transition-colors">Set Up</button>
+                    )}
                   </div>
                   {showPasskey && (
-                    <div className="bg-violet-50 border border-violet-200 rounded-xl p-4">
-                      <p className="text-sm text-gray-700 mb-2">Passkeys let you sign in with biometrics (fingerprint, face) or a security key.</p>
-                      <p className="text-xs text-gray-500 mb-3">Click below to register a new passkey with your device.</p>
-                      <button onClick={() => setShowPasskey(false)} className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-xl text-sm font-medium">Register Passkey</button>
+                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                      <p className="text-sm text-gray-700 mb-2">Passkeys let you sign in with biometrics (fingerprint, face) or a security key — no password needed.</p>
+                      <p className="text-xs text-gray-500 mb-3">Your browser will prompt you to register a passkey for this site.</p>
+                      <div className="flex items-center gap-3">
+                        <button onClick={registerPasskey} className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-medium">Register Passkey</button>
+                        <button onClick={() => setShowPasskey(false)} className="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
+                      </div>
+                      {passkeyError && <p className="text-xs text-red-500 mt-2">{passkeyError}</p>}
                     </div>
                   )}
                 </div>
@@ -433,13 +626,21 @@ https://bosssaas.co.za
               <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-semibold text-gray-900">Active Sessions</h3>
-                  <button onClick={() => setSessions(prev => prev.filter(s => s.current))} className="text-xs text-red-500 hover:text-red-600 font-medium">Sign out all other</button>
+                  {confirmSignOutAll ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-red-600 font-medium">Sign out all other sessions?</span>
+                      <button onClick={() => { signOutOthers(); setConfirmSignOutAll(false); }} className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg font-medium">Yes, sign out</button>
+                      <button onClick={() => setConfirmSignOutAll(false)} className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1.5">Cancel</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => setConfirmSignOutAll(true)} className="text-xs text-red-500 hover:text-red-600 font-medium">Sign out all other</button>
+                  )}
                 </div>
                 <div className="space-y-3">
                   {sessions.map((session) => (
-                    <div key={session.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div key={session.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl transition-all duration-300">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${session.current ? "bg-emerald-100 text-emerald-600" : "bg-gray-200 text-gray-500"}`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${session.current ? "bg-sky-100 text-sky-600" : "bg-gray-200 text-gray-500"}`}>
                           <Smartphone size={18} />
                         </div>
                         <div>
@@ -448,12 +649,21 @@ https://bosssaas.co.za
                         </div>
                       </div>
                       {session.current ? (
-                        <span className="text-xs bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full font-medium">Current</span>
+                        <span className="text-xs bg-sky-50 text-sky-600 px-2.5 py-1 rounded-full font-medium">Current</span>
+                      ) : confirmRevoke === session.id ? (
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle size={14} className="text-red-500" />
+                          <button onClick={() => { revokeSession(session.id); setConfirmRevoke(null); }} className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg font-medium">Revoke now</button>
+                          <button onClick={() => setConfirmRevoke(null)} className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1.5">Cancel</button>
+                        </div>
                       ) : (
-                        <button onClick={() => revokeSession(session.id)} className="text-xs text-red-500 hover:text-red-600 font-medium">Revoke</button>
+                        <button onClick={() => setConfirmRevoke(session.id)} className="text-xs text-red-500 hover:text-red-600 font-medium">Revoke</button>
                       )}
                     </div>
                   ))}
+                  {sessions.length === 1 && (
+                    <p className="text-sm text-gray-400 text-center py-4">No other active sessions</p>
+                  )}
                 </div>
               </div>
             </div>

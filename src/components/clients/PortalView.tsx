@@ -53,13 +53,13 @@ const portalDatabase: Record<string, PortalData> = {
 };
 
 const statusStyles: Record<string, string> = {
-  paid: "bg-emerald-100 text-emerald-600",
+  paid: "bg-sky-100 text-sky-600",
   sent: "bg-sky-100 text-sky-600",
   draft: "bg-gray-100 text-gray-600",
-  overdue: "bg-red-100 text-red-500",
+  overdue: "bg-gray-200 text-gray-700",
   "In Progress": "bg-sky-100 text-sky-600",
   "Not Started": "bg-gray-100 text-gray-500",
-  Completed: "bg-emerald-100 text-emerald-600",
+  Completed: "bg-sky-100 text-sky-600",
 };
 
 export default function PortalView() {
@@ -86,7 +86,7 @@ export default function PortalView() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <AlertCircle size={48} className="mx-auto text-red-400 mb-4" />
+          <AlertCircle size={48} className="mx-auto text-gray-400 mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Invalid Portal Link</h1>
           <p className="text-gray-500">This portal link is invalid or has expired.</p>
           <a href="/" className="mt-6 inline-block bg-sky-500 text-white px-6 py-3 rounded-xl font-medium hover:bg-sky-600 transition-colors">
@@ -220,7 +220,7 @@ export default function PortalView() {
                 {data.documents.map((doc) => (
                   <div key={doc.name} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 bg-violet-100 text-violet-600 rounded-lg flex items-center justify-center">
+                      <div className="w-9 h-9 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center">
                         <File size={16} />
                       </div>
                       <div>

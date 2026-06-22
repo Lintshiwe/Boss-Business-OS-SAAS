@@ -14,7 +14,7 @@ const initialInvoices: Invoice[] = [
 ];
 
 const statusStyles: Record<string, string> = {
-  draft: "bg-gray-100 text-gray-600", sent: "bg-sky-100 text-sky-600", paid: "bg-emerald-100 text-emerald-600", overdue: "bg-red-100 text-red-500",
+  draft: "bg-gray-100 text-gray-600", sent: "bg-sky-100 text-sky-600", paid: "bg-sky-100 text-sky-600", overdue: "bg-gray-200 text-gray-700",
 };
 
 export default function InvoiceList() {
@@ -94,10 +94,10 @@ Thank you for your business!
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-1">
                     <button onClick={() => setShowPreview(inv)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Preview"><Eye size={16} /></button>
-                    <button onClick={() => downloadPDF(inv)} className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Download"><Download size={16} /></button>
+                    <button onClick={() => downloadPDF(inv)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Download"><Download size={16} /></button>
                     {inv.status === "draft" && <button onClick={() => sendInvoice(inv.id)} className="p-2 text-sky-500 hover:bg-sky-50 rounded-lg transition-colors" title="Send"><Send size={16} /></button>}
-                    {inv.status === "sent" && <button onClick={() => markPaid(inv.id)} className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors" title="Mark Paid"><CheckCircle size={16} /></button>}
-                    <button onClick={() => deleteInvoice(inv.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete"><Trash2 size={16} /></button>
+                    {inv.status === "sent" && <button onClick={() => markPaid(inv.id)} className="p-2 text-sky-500 hover:bg-sky-50 rounded-lg transition-colors" title="Mark Paid"><CheckCircle size={16} /></button>}
+                    <button onClick={() => deleteInvoice(inv.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Delete"><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>

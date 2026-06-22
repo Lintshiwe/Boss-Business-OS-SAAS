@@ -90,7 +90,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm">{error}</p>
+            <p className="text-gray-600 text-sm">{error}</p>
           )}
 
           <button

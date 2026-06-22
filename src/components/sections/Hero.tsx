@@ -11,8 +11,8 @@ const fadeUp = {
 
 const benefits = [
   { icon: Users, label: "CRM Pipeline", color: "bg-sky-50 text-sky-600" },
-  { icon: FileText, label: "Smart Invoicing", color: "bg-violet-50 text-violet-600" },
-  { icon: FolderKanban, label: "Project Tracking", color: "bg-emerald-50 text-emerald-600" },
+  { icon: FileText, label: "Smart Invoicing", color: "bg-gray-100 text-gray-600" },
+  { icon: FolderKanban, label: "Project Tracking", color: "bg-sky-50 text-sky-600" },
   { icon: Globe, label: "Client Portals", color: "bg-cyan-50 text-cyan-600" },
 ];
 
@@ -23,7 +23,7 @@ export default function Hero() {
     <section ref={ref} className="relative pt-32 pb-20 overflow-hidden">
       {/* Background glow shapes */}
       <div className="absolute top-20 left-1/4 w-96 h-96 bg-sky-200/30 rounded-full blur-3xl animate-glow" />
-      <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-violet-200/30 rounded-full blur-3xl animate-glow" style={{ animationDelay: "2s" }} />
+      <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-sky-200/30 rounded-full blur-3xl animate-glow" style={{ animationDelay: "2s" }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center max-w-4xl mx-auto">
@@ -84,8 +84,8 @@ export default function Hero() {
 
           {/* Floating metric cards */}
           <div className="absolute -top-4 -left-4 sm:top-4 sm:left-4 bg-white/90 backdrop-blur-md rounded-xl shadow-lg p-3 flex items-center gap-3 animate-float" style={{ animationDelay: "1s" }}>
-            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <TrendingUp size={20} className="text-emerald-600" />
+            <div className="w-10 h-10 bg-sky-100 rounded-lg flex items-center justify-center">
+              <TrendingUp size={20} className="text-sky-600" />
             </div>
             <div>
               <p className="text-sm font-bold text-gray-900">R 48,900</p>

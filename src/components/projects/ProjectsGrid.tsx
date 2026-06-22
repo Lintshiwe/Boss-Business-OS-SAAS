@@ -13,7 +13,7 @@ const initialProjects: Project[] = [
 ];
 
 const statusStyles: Record<string, string> = {
-  planning: "bg-amber-50 text-amber-600", active: "bg-sky-50 text-sky-600", completed: "bg-emerald-50 text-emerald-600", "on-hold": "bg-gray-100 text-gray-600",
+  planning: "bg-gray-100 text-gray-600", active: "bg-sky-50 text-sky-600", completed: "bg-sky-100 text-sky-600", "on-hold": "bg-gray-100 text-gray-600",
 };
 
 export default function ProjectsGrid() {
@@ -72,7 +72,7 @@ export default function ProjectsGrid() {
                 <button onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg">
                   {expandedProject === project.id ? <CheckCircle size={16} /> : <MoreHorizontal size={16} />}
                 </button>
-                <button onClick={() => deleteProject(project.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                <button onClick={() => deleteProject(project.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><Trash2 size={14} /></button>
               </div>
             </div>
 

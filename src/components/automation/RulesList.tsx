@@ -119,7 +119,7 @@ export default function RulesList() {
               <button onClick={() => toggleRule(rule.id)} className={`relative w-12 h-6 rounded-full transition-colors ${rule.isActive ? "bg-sky-500" : "bg-gray-300"}`}>
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform shadow-sm ${rule.isActive ? "translate-x-6" : ""}`} />
               </button>
-              <button onClick={() => deleteRule(rule.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
+              <button onClick={() => deleteRule(rule.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><Trash2 size={14} /></button>
             </div>
           </div>
         ))}
@@ -157,7 +157,7 @@ export default function RulesList() {
       {/* Toast notifications */}
       <div className="fixed bottom-6 right-6 z-50 space-y-3">
         {toasts.map((toast) => (
-          <div key={toast.id} className={`flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-lg text-sm font-medium text-white animate-[slideIn_0.3s_ease-out] ${toast.type === "success" ? "bg-emerald-500" : "bg-red-500"}`}>
+          <div key={toast.id} className={`flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-lg text-sm font-medium text-white animate-[slideIn_0.3s_ease-out] ${toast.type === "success" ? "bg-sky-500" : "bg-gray-700"}`}>
             {toast.type === "success" ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
             {toast.message}
           </div>

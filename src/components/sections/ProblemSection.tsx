@@ -43,12 +43,12 @@ export default function ProblemSection() {
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-red-50 border border-red-100 rounded-2xl p-8"
+            className="bg-gray-50 border border-gray-200 rounded-2xl p-8"
           >
-            <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-red-700 mb-6">The Old Way</h3>
+            <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-gray-700 mb-6">The Old Way</h3>
             <ul className="space-y-4">
               {problems.map((item) => (
-                <li key={item} className="flex items-center gap-3 text-red-600">
+                <li key={item} className="flex items-center gap-3 text-gray-600">
                   <X size={18} className="shrink-0" />
                   <span className="text-gray-700">{item}</span>
                 </li>
@@ -66,7 +66,7 @@ export default function ProblemSection() {
             <ul className="space-y-4">
               {solutions.map((item) => (
                 <li key={item} className="flex items-center gap-3">
-                  <Check size={18} className="text-emerald-500 shrink-0" />
+                  <Check size={18} className="text-sky-500 shrink-0" />
                   <span className="text-gray-700">{item}</span>
                 </li>
               ))}

@@ -17,14 +17,14 @@ const testimonials = [
     name: "Sarah K.",
     role: "Marketing Consultant, Cape Town",
     initials: "SK",
-    color: "bg-violet-100 text-violet-700",
+    color: "bg-gray-100 text-gray-700",
   },
   {
     quote: "We closed R 200K in new business in our first month using BOSS's pipeline.",
     name: "David N.",
     role: "Agency Founder, Durban",
     initials: "DN",
-    color: "bg-emerald-100 text-emerald-700",
+    color: "bg-sky-100 text-sky-700",
   },
 ];
 
@@ -57,12 +57,12 @@ export default function Testimonials() {
             >
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, j) => (
-                  <Star key={j} size={16} className="fill-amber-400 text-amber-400" />
+                  <Star key={j} size={16} className="fill-gray-400 text-gray-400" />
                 ))}
               </div>
               <p className="text-gray-700 leading-relaxed mb-6">&ldquo;{t.quote}&rdquo;</p>
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${t.color}`}>
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold ${t.color} ring-2 ring-white shadow-sm`}>
                   {t.initials}
                 </div>
                 <div>

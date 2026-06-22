@@ -62,10 +62,10 @@ type Period = "month" | "quarter" | "year";
 const periodData: Record<Period, { stats: { label: string; value: string; change: number; positive: boolean; icon: typeof DollarSign; bg: string }[]; revenue: { name: string; value: number }[]; clients: { name: string; value: number }[]; topMetrics: { label: string; value: string; change: number; positive: boolean }[] }> = {
   month: {
     stats: [
-      { label: "Total Revenue", value: "R 248,500", change: 12, positive: true, icon: DollarSign, bg: "bg-emerald-50" },
-      { label: "Total Clients", value: "12", change: 8, positive: true, icon: Users, bg: "bg-sky-50" },
-      { label: "Invoices Sent", value: "28", change: 15, positive: true, icon: FileText, bg: "bg-amber-50" },
-      { label: "Growth Rate", value: "18%", change: 3, positive: true, icon: TrendingUp, bg: "bg-violet-50" },
+      { label: "Total Revenue", value: "R 248,500", change: 12, positive: true, icon: DollarSign, bg: "bg-sky-50" },
+      { label: "Total Clients", value: "12", change: 8, positive: true, icon: Users, bg: "bg-gray-100" },
+      { label: "Invoices Sent", value: "28", change: 15, positive: true, icon: FileText, bg: "bg-gray-100" },
+      { label: "Growth Rate", value: "18%", change: 3, positive: true, icon: TrendingUp, bg: "bg-sky-50" },
     ],
     revenue: monthlyRevenue,
     clients: clientRevenue,
@@ -78,10 +78,10 @@ const periodData: Record<Period, { stats: { label: string; value: string; change
   },
   quarter: {
     stats: [
-      { label: "Total Revenue", value: "R 246,900", change: 18, positive: true, icon: DollarSign, bg: "bg-emerald-50" },
-      { label: "Total Clients", value: "12", change: 12, positive: true, icon: Users, bg: "bg-sky-50" },
-      { label: "Invoices Sent", value: "45", change: 22, positive: true, icon: FileText, bg: "bg-amber-50" },
-      { label: "Growth Rate", value: "22%", change: 5, positive: true, icon: TrendingUp, bg: "bg-violet-50" },
+      { label: "Total Revenue", value: "R 246,900", change: 18, positive: true, icon: DollarSign, bg: "bg-sky-50" },
+      { label: "Total Clients", value: "12", change: 12, positive: true, icon: Users, bg: "bg-gray-100" },
+      { label: "Invoices Sent", value: "45", change: 22, positive: true, icon: FileText, bg: "bg-gray-100" },
+      { label: "Growth Rate", value: "22%", change: 5, positive: true, icon: TrendingUp, bg: "bg-sky-50" },
     ],
     revenue: quarterlyRevenue,
     clients: clientRevenueQ,
@@ -94,10 +94,10 @@ const periodData: Record<Period, { stats: { label: string; value: string; change
   },
   year: {
     stats: [
-      { label: "Total Revenue", value: "R 936,900", change: 28, positive: true, icon: DollarSign, bg: "bg-emerald-50" },
-      { label: "Total Clients", value: "12", change: 20, positive: true, icon: Users, bg: "bg-sky-50" },
-      { label: "Invoices Sent", value: "156", change: 35, positive: true, icon: FileText, bg: "bg-amber-50" },
-      { label: "Growth Rate", value: "32%", change: 8, positive: true, icon: TrendingUp, bg: "bg-violet-50" },
+      { label: "Total Revenue", value: "R 936,900", change: 28, positive: true, icon: DollarSign, bg: "bg-sky-50" },
+      { label: "Total Clients", value: "12", change: 20, positive: true, icon: Users, bg: "bg-gray-100" },
+      { label: "Invoices Sent", value: "156", change: 35, positive: true, icon: FileText, bg: "bg-gray-100" },
+      { label: "Growth Rate", value: "32%", change: 8, positive: true, icon: TrendingUp, bg: "bg-sky-50" },
     ],
     revenue: yearlyRevenue,
     clients: clientRevenueY,
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
             <p className="text-xs text-gray-500 mb-1">{metric.label}</p>
             <div className="flex items-end gap-2">
               <p className="text-lg sm:text-xl font-bold text-gray-900">{metric.value}</p>
-              <span className={`text-xs font-medium flex items-center gap-0.5 mb-0.5 ${metric.positive ? "text-emerald-600" : "text-red-500"}`}>
+              <span className={`text-xs font-medium flex items-center gap-0.5 mb-0.5 ${metric.positive ? "text-sky-600" : "text-gray-600"}`}>
                 {metric.positive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                 {metric.change}%
               </span>

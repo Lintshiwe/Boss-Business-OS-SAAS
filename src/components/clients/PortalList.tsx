@@ -79,13 +79,13 @@ export default function PortalList() {
                 <a href={`/portal?token=${portal.token}`} target="_blank" className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Open portal">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 </a>
-                <button onClick={() => toggleAccess(portal.id, "invoices")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.invoices ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400"}`}>Invoices</button>
+                <button onClick={() => toggleAccess(portal.id, "invoices")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.invoices ? "bg-sky-50 text-sky-600" : "bg-gray-100 text-gray-400"}`}>Invoices</button>
                 <button onClick={() => toggleAccess(portal.id, "projects")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.projects ? "bg-sky-50 text-sky-600" : "bg-gray-100 text-gray-400"}`}>Projects</button>
-                <button onClick={() => toggleAccess(portal.id, "documents")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.documents ? "bg-violet-50 text-violet-600" : "bg-gray-100 text-gray-400"}`}>Documents</button>
+                <button onClick={() => toggleAccess(portal.id, "documents")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.documents ? "bg-gray-100 text-gray-600" : "bg-gray-100 text-gray-400"}`}>Documents</button>
                 <button onClick={() => copyLink(portal)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Copy link">
-                  {copiedId === portal.id ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedId === portal.id ? <Check size={16} className="text-sky-500" /> : <Copy size={16} />}
                 </button>
-                <button onClick={() => deletePortal(portal.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                <button onClick={() => deletePortal(portal.id)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"><Trash2 size={14} /></button>
               </div>
             </div>
           </div>

@@ -16,9 +16,9 @@ const initialDeals: Deal[] = [
 const stages = [
   { id: "new", label: "New", color: "border-gray-300", bg: "bg-gray-50" },
   { id: "contacted", label: "Contacted", color: "border-sky-400", bg: "bg-sky-50" },
-  { id: "qualified", label: "Qualified", color: "border-amber-400", bg: "bg-amber-50" },
-  { id: "proposal", label: "Proposal", color: "border-violet-400", bg: "bg-violet-50" },
-  { id: "won", label: "Won", color: "border-emerald-400", bg: "bg-emerald-50" },
+  { id: "qualified", label: "Qualified", color: "border-gray-400", bg: "bg-gray-50" },
+  { id: "proposal", label: "Proposal", color: "border-sky-400", bg: "bg-sky-50" },
+  { id: "won", label: "Won", color: "border-sky-500", bg: "bg-sky-100" },
 ];
 
 export default function PipelineBoard() {
@@ -62,7 +62,7 @@ export default function PipelineBoard() {
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <GripVertical size={14} className="text-gray-300" />
-                          <button onClick={(e) => { e.stopPropagation(); deleteDeal(deal.id); }} className="p-1 text-gray-300 hover:text-red-500 rounded"><Trash2 size={12} /></button>
+                          <button onClick={(e) => { e.stopPropagation(); deleteDeal(deal.id); }} className="p-1 text-gray-300 hover:text-gray-600 rounded"><Trash2 size={12} /></button>
                         </div>
                       </div>
                       <p className="text-sm font-bold text-sky-600 mt-3">R {deal.value.toLocaleString()}</p>
