@@ -10,7 +10,7 @@ const testimonials = [
     name: "Thabo M.",
     role: "Freelance Developer, Johannesburg",
     initials: "TM",
-    color: "bg-indigo-100 text-indigo-700",
+    color: "bg-sky-100 text-sky-700",
   },
   {
     quote: "The client portal alone is worth it. Clients love being able to check project status themselves.",

@@ -33,8 +33,8 @@ export default function WorkflowTimeline() {
 
         <div className="relative max-w-3xl mx-auto">
           {/* Vertical line */}
-          <div className="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-indigo-200 -translate-x-1/2 hidden sm:block" />
-          <div className="absolute left-5 top-0 bottom-0 w-px bg-indigo-200 sm:hidden" />
+          <div className="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-sky-200 -translate-x-1/2 hidden sm:block" />
+          <div className="absolute left-5 top-0 bottom-0 w-px bg-sky-200 sm:hidden" />
 
           <div className="space-y-12">
             {steps.map((step, i) => {

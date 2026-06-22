@@ -9,7 +9,7 @@ interface ChartProps {
   height?: number;
 }
 
-export default function Chart({ type, data, color = "#6366f1", height = 300 }: ChartProps) {
+export default function Chart({ type, data, color = "#0ea5e9", height = 300 }: ChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       {type === "line" ? (

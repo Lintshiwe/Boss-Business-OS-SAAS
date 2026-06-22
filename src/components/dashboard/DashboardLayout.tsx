@@ -1,14 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import { cn } from "../../lib/utils";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="ml-64">
+      <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
+      <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "ml-64")}>
         <TopBar />
         <main className="p-6">
           {children}

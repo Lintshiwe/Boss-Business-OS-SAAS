@@ -5,7 +5,7 @@ import { Users, FolderKanban, FileText, Globe, BarChart3, Zap } from "lucide-rea
 import { useInView } from "../../lib/hooks";
 
 const features = [
-  { icon: Users, title: "CRM Pipeline", desc: "Track every lead from first contact to closed deal. Never lose a prospect again.", color: "bg-indigo-50 text-indigo-600" },
+  { icon: Users, title: "CRM Pipeline", desc: "Track every lead from first contact to closed deal. Never lose a prospect again.", color: "bg-sky-50 text-sky-600" },
   { icon: FolderKanban, title: "Project Management", desc: "Plan, track, and deliver projects on time. Kanban boards, timelines, and milestones.", color: "bg-violet-50 text-violet-600" },
   { icon: FileText, title: "Smart Invoicing", desc: "Create professional invoices in seconds. Track payments. Auto-reminders for overdue.", color: "bg-emerald-50 text-emerald-600" },
   { icon: Globe, title: "Client Portals", desc: "Give clients their own login. They can view projects, download invoices, and message you.", color: "bg-cyan-50 text-cyan-600" },

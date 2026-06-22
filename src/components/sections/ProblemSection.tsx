@@ -60,7 +60,7 @@ export default function ProblemSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-indigo-50 border border-indigo-100 rounded-2xl p-8"
+            className="bg-sky-50 border border-sky-100 rounded-2xl p-8"
           >
             <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-primary mb-6">The BOSS Way</h3>
             <ul className="space-y-4">

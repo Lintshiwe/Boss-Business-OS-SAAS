@@ -29,7 +29,7 @@ export default function FinalCTA() {
               <br />
               scattered tabs
             </h2>
-            <p className="text-indigo-100 text-lg max-w-xl mx-auto mb-10">
+            <p className="text-sky-100 text-lg max-w-xl mx-auto mb-10">
               Join hundreds of South African businesses running smoother with BOSS.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

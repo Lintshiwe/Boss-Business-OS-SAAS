@@ -17,19 +17,23 @@ const navItems = [
   { icon: Zap, label: "Automation", href: "/app/automation" },
 ];
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const currentPath = typeof window !== "undefined" ? (window?.location?.pathname || "/app") : "/app";
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-full bg-gray-900 text-white flex flex-col transition-all duration-300 z-40",
+        "fixed left-0 top-0 h-full bg-sky-950 text-white flex flex-col transition-all duration-300 z-40",
         collapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-gray-800">
+      <div className="h-16 flex items-center px-4 border-b border-sky-800/50">
         <img src="/images/logo.png" alt="BOSS" className="h-8 w-auto" />
         {!collapsed && (
           <span className="ml-2 text-sm font-bold gradient-text">BOSS</span>
@@ -47,8 +51,8 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-primary/20 text-white"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  ? "bg-sky-500/20 text-white"
+                  : "text-sky-300/70 hover:text-white hover:bg-sky-800/50"
               )}
             >
               <item.icon size={20} />
@@ -59,17 +63,17 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom */}
-      <div className="p-2 border-t border-gray-800 space-y-1">
+      <div className="p-2 border-t border-sky-800/50 space-y-1">
         <a
           href="/app/settings"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-sky-300/70 hover:text-white hover:bg-sky-800/50 transition-colors"
         >
           <Settings size={20} />
           {!collapsed && <span>Settings</span>}
         </a>
         <a
           href="/"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-sky-300/70 hover:text-white hover:bg-sky-800/50 transition-colors"
         >
           <LogOut size={20} />
           {!collapsed && <span>Back to Site</span>}
@@ -78,8 +82,8 @@ export default function Sidebar() {
 
       {/* Collapse toggle */}
       <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 bg-gray-800 border border-gray-700 rounded-full p-1 text-gray-400 hover:text-white"
+        onClick={onToggle}
+        className="absolute -right-3 top-20 bg-sky-800 border border-sky-700 rounded-full p-1 text-sky-300 hover:text-white"
       >
         {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
       </button>
