@@ -25,7 +25,7 @@ export default function PortalList() {
     const token = generateToken();
     setPortals(prev => [...prev, {
       id: String(Date.now()), client: form.client, token, lastAccessed: "Never",
-      access: form.access, url: `https://portal.bosssaas.co.za/${token}`,
+      access: form.access, url: `/portal?token=${token}`,
     }]);
     setShowModal(false);
     setForm({ client: "", access: { invoices: true, projects: false, documents: false } });
@@ -34,7 +34,8 @@ export default function PortalList() {
   const deletePortal = (id: string) => setPortals(prev => prev.filter(p => p.id !== id));
 
   const copyLink = (portal: Portal) => {
-    const url = `https://portal.bosssaas.co.za/${portal.token}`;
+    const base = window.location.origin;
+    const url = `${base}/portal?token=${portal.token}`;
     navigator.clipboard.writeText(url);
     setCopiedId(portal.id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -75,6 +76,9 @@ export default function PortalList() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <a href={`/portal?token=${portal.token}`} target="_blank" className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Open portal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
                 <button onClick={() => toggleAccess(portal.id, "invoices")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.invoices ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400"}`}>Invoices</button>
                 <button onClick={() => toggleAccess(portal.id, "projects")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.projects ? "bg-sky-50 text-sky-600" : "bg-gray-100 text-gray-400"}`}>Projects</button>
                 <button onClick={() => toggleAccess(portal.id, "documents")} className={`text-xs px-2 py-1 rounded-full transition-colors ${portal.access.documents ? "bg-violet-50 text-violet-600" : "bg-gray-100 text-gray-400"}`}>Documents</button>

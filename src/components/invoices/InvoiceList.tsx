@@ -41,23 +41,25 @@ export default function InvoiceList() {
 
   const downloadPDF = (inv: Invoice) => {
     const content = `
-═══════════════════════════════════════
-              INVOICE
-═══════════════════════════════════════
+══════════════════════════════════════════
+              BOSS INVOICE
+══════════════════════════════════════════
+Business Operating System as a Service
+hello@bosssaas.co.za
+──────────────────────────────────────────
 Invoice:     ${inv.id}
 Date:        ${inv.issuedAt}
 Due Date:    ${inv.dueDate || "N/A"}
 Status:      ${inv.status.toUpperCase()}
-───────────────────────────────────────
+──────────────────────────────────────────
 Bill To:     ${inv.client}
-───────────────────────────────────────
+──────────────────────────────────────────
 ITEMS:
 ${inv.items.map(i => `  ${i.desc}    x${i.qty}    R ${i.rate.toLocaleString()}`).join("\n")}
-───────────────────────────────────────
+──────────────────────────────────────────
 TOTAL:       R ${inv.amount.toLocaleString()}
-═══════════════════════════════════════
-BOSS - Business Operating System
-hello@bosssaas.co.za
+══════════════════════════════════════════
+Thank you for your business!
     `.trim();
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -140,7 +142,13 @@ hello@bosssaas.co.za
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowPreview(null)}>
           <div className="bg-white rounded-2xl p-8 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold">{showPreview.id}</h3>
+              <div className="flex items-center gap-3">
+                <img src="/images/logo.png" alt="BOSS" className="h-8 w-auto" />
+                <div>
+                  <h3 className="text-lg font-semibold">{showPreview.id}</h3>
+                  <p className="text-xs text-gray-400">BOSS Invoice</p>
+                </div>
+              </div>
               <button onClick={() => setShowPreview(null)} className="p-1 hover:bg-gray-100 rounded-lg"><X size={20} /></button>
             </div>
             <div className="space-y-3 text-sm">
