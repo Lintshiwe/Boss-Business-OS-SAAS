@@ -2,11 +2,15 @@
 import Layout from "../../layouts/Layout.astro";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import ContactsTable from "../../components/crm/ContactsTable";
+import PipelineBoard from "../../components/crm/PipelineBoard";
 import "../../styles/global.css";
 ---
 
 <Layout title="CRM — BOSS">
   <DashboardLayout client:load>
-    <ContactsTable client:load />
+    <div class="space-y-8">
+      <ContactsTable client:load />
+      <PipelineBoard client:load />
+    </div>
   </DashboardLayout>
 </Layout>

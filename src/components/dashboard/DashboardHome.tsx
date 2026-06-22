@@ -99,6 +99,28 @@ export default function DashboardHome() {
         </div>
       </div>
 
+      {/* Pipeline Overview */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">CRM Pipeline</h3>
+          <a href="/app/crm" className="text-xs text-sky-500 hover:text-sky-600 flex items-center gap-1">View board <ArrowRight size={12} /></a>
+        </div>
+        <div className="flex gap-4 overflow-x-auto">
+          {pipelineData.map((stage, i) => {
+            const colors = ["bg-gray-100", "bg-sky-100", "bg-amber-100", "bg-violet-100", "bg-emerald-100"];
+            const textColors = ["text-gray-600", "text-sky-600", "text-amber-600", "text-violet-600", "text-emerald-600"];
+            const values = [24500, 19750, 36400, 62000, 110900];
+            return (
+              <div key={stage.name} className={`${colors[i]} rounded-xl p-4 min-w-[160px] flex-1`}>
+                <p className={`text-xs font-medium ${textColors[i]} mb-1`}>{stage.name}</p>
+                <p className="text-2xl font-bold text-gray-900">{stage.value}</p>
+                <p className="text-xs text-gray-500 mt-1">R {values[i].toLocaleString()}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}

@@ -1,15 +1,28 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, Bell, ChevronDown, Settings, LogOut, User, FileText, CheckCircle, Clock } from "lucide-react";
+import { Search, Bell, ChevronDown, Settings, LogOut, User, FileText, CheckCircle, Clock, Trash2, Check, FolderKanban, Users } from "lucide-react";
 
-const notifications = [
-  { id: "1", icon: FileText, title: "New invoice INV-005 paid", desc: "Digital Marketing SA paid R 19,750", time: "2 min ago", unread: true },
-  { id: "2", icon: CheckCircle, title: "Project milestone completed", desc: "TechCorp redesign — Phase 2 done", time: "1 hour ago", unread: true },
-  { id: "3", icon: Clock, title: "Invoice INV-003 overdue", desc: "FreshFoods — R 12,500 past due", time: "3 hours ago", unread: false },
+interface Notification {
+  id: string;
+  icon: any;
+  title: string;
+  desc: string;
+  time: string;
+  unread: boolean;
+  href: string;
+}
+
+const initialNotifications: Notification[] = [
+  { id: "1", icon: FileText, title: "New invoice INV-005 paid", desc: "Digital Marketing SA paid R 19,750", time: "2 min ago", unread: true, href: "/app/invoices" },
+  { id: "2", icon: CheckCircle, title: "Project milestone completed", desc: "TechCorp redesign — Phase 2 done", time: "1 hour ago", unread: true, href: "/app/projects" },
+  { id: "3", icon: Clock, title: "Invoice INV-003 overdue", desc: "FreshFoods — R 12,500 past due", time: "3 hours ago", unread: false, href: "/app/invoices" },
+  { id: "4", icon: Users, title: "New lead assigned", desc: "Naledi Dlamini from Digital Marketing SA", time: "5 hours ago", unread: false, href: "/app/crm" },
+  { id: "5", icon: FolderKanban, title: "Project BuildRight CRM started", desc: "New project created by Sarah", time: "1 day ago", unread: false, href: "/app/projects" },
 ];
 
 export default function TopBar() {
+  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -26,57 +39,68 @@ export default function TopBar() {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
+  const markAsRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
+  };
+
+  const markAllRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+  };
+
+  const deleteNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const handleNotifClick = (notif: Notification) => {
+    markAsRead(notif.id);
+    setNotifOpen(false);
+    window.location.href = notif.href;
+  };
+
   return (
     <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-30">
-      {/* Search */}
       <div className="relative w-96">
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search contacts, invoices, projects..."
-          className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400"
-        />
+        <input type="text" placeholder="Search contacts, invoices, projects..." className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-400" />
       </div>
 
-      {/* Right side */}
       <div className="flex items-center gap-4">
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
-          <button
-            onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }}
-            className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
-          >
+          <button onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }} className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
             <Bell size={20} />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-            )}
+            {unreadCount > 0 && <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />}
           </button>
 
           {notifOpen && (
-            <div className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden z-50">
+            <div className="absolute right-0 top-12 w-96 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden z-50">
               <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-semibold text-gray-900 text-sm">Notifications</h3>
-                <button className="text-xs text-sky-500 hover:text-sky-600">Mark all read</button>
+                <h3 className="font-semibold text-gray-900 text-sm">Notifications ({unreadCount} unread)</h3>
+                <button onClick={markAllRead} className="text-xs text-sky-500 hover:text-sky-600 flex items-center gap-1"><Check size={12} /> Mark all read</button>
               </div>
-              <div className="max-h-80 overflow-y-auto">
+              <div className="max-h-96 overflow-y-auto">
+                {notifications.length === 0 && (
+                  <div className="p-8 text-center text-gray-400 text-sm">No notifications</div>
+                )}
                 {notifications.map((n) => (
-                  <div key={n.id} className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${n.unread ? "bg-sky-50/50" : ""}`}>
+                  <div key={n.id} className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors group ${n.unread ? "bg-sky-50/50" : ""}`} onClick={() => handleNotifClick(n)}>
                     <div className="flex items-start gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${n.unread ? "bg-sky-100 text-sky-600" : "bg-gray-100 text-gray-500"}`}>
                         <n.icon size={16} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900">{n.title}</p>
-                        <p className="text-xs text-gray-500 mt-0.5 truncate">{n.desc}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{n.desc}</p>
                         <p className="text-xs text-gray-400 mt-1">{n.time}</p>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {!n.unread && <button onClick={(e) => { e.stopPropagation(); markAsRead(n.id); }} className="p-1 text-gray-400 hover:text-sky-500 rounded" title="Mark as read"><Check size={12} /></button>}
+                        <button onClick={(e) => { e.stopPropagation(); deleteNotification(n.id); }} className="p-1 text-gray-400 hover:text-red-500 rounded" title="Delete"><Trash2 size={12} /></button>
                       </div>
                       {n.unread && <div className="w-2 h-2 bg-sky-500 rounded-full flex-shrink-0 mt-1" />}
                     </div>
                   </div>
                 ))}
-              </div>
-              <div className="p-3 border-t border-gray-100">
-                <button className="w-full text-center text-sm text-sky-500 hover:text-sky-600 font-medium">View all notifications</button>
               </div>
             </div>
           )}
@@ -84,13 +108,8 @@ export default function TopBar() {
 
         {/* User menu */}
         <div className="relative" ref={profileRef}>
-          <button
-            onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }}
-            className="flex items-center gap-2 pl-3 pr-2 py-1.5 hover:bg-gray-100 rounded-xl transition-colors"
-          >
-            <div className="w-8 h-8 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-sm font-bold">
-              TM
-            </div>
+          <button onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }} className="flex items-center gap-2 pl-3 pr-2 py-1.5 hover:bg-gray-100 rounded-xl transition-colors">
+            <div className="w-8 h-8 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-sm font-bold">TM</div>
             <div className="hidden sm:block text-left">
               <p className="text-sm font-medium text-gray-900">Thabo M.</p>
               <p className="text-xs text-gray-500">Admin</p>
@@ -105,16 +124,10 @@ export default function TopBar() {
                 <p className="text-xs text-gray-500">thabo@bosssaas.co.za</p>
               </div>
               <div className="py-2">
-                <a href="/app/settings" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                  <User size={16} /> My Profile
-                </a>
-                <a href="/app/settings" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                  <Settings size={16} /> Settings
-                </a>
+                <a href="/app/settings" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"><User size={16} /> My Profile</a>
+                <a href="/app/settings" className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"><Settings size={16} /> Settings</a>
                 <div className="border-t border-gray-100 my-2" />
-                <a href="/" className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                  <LogOut size={16} /> Sign Out
-                </a>
+                <a href="/" className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"><LogOut size={16} /> Sign Out</a>
               </div>
             </div>
           )}

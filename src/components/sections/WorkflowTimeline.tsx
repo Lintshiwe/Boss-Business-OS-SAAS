@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView as useFramerInView } from "framer-motion";
 import { UserPlus, Target, Send, Handshake, Rocket, Banknote } from "lucide-react";
-import { useInView } from "../../lib/hooks";
 
 const steps = [
   { icon: UserPlus, title: "Capture Lead", desc: "Import contacts or add from website" },
@@ -13,8 +13,61 @@ const steps = [
   { icon: Banknote, title: "Get Paid", desc: "Invoice and collect payment", badge: "R 48,900" },
 ];
 
+function StepCard({ step, index, isLeft }: { step: typeof steps[0]; index: number; isLeft: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useFramerInView(ref, { once: false, amount: 0.5 });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: isLeft ? -50 : 50, scale: 0.9 }}
+      animate={isInView ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0.3, x: isLeft ? -50 : 50, scale: 0.9 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      whileInView={{ scale: isInView ? 1.05 : 0.95 }}
+      className={`relative flex items-start gap-6 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} sm:flex-row`}
+    >
+      {/* Number circle */}
+      <motion.div
+        animate={isInView ? { scale: [1, 1.3, 1], boxShadow: ["0 0 0 0 rgba(14,165,233,0)", "0 0 0 12px rgba(14,165,233,0.15)", "0 0 0 0 rgba(14,165,233,0)"] } : {}}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="relative z-10 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold shrink-0 shadow-md"
+      >
+        {index + 1}
+      </motion.div>
+
+      {/* Content card */}
+      <motion.div
+        animate={isInView ? { scale: 1, boxShadow: "0 8px 30px rgba(0,0,0,0.08)" } : { scale: 0.95, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+        transition={{ duration: 0.4 }}
+        className={`flex-1 sm:text-left ${isLeft ? "md:text-right" : "md:text-left"} bg-white border rounded-xl p-6 transition-colors duration-300 ${isInView ? "border-sky-200" : "border-gray-100"}`}
+      >
+        <div className={`flex items-center gap-3 mb-2 ${isLeft ? "md:justify-end" : "md:justify-start"} sm:justify-start`}>
+          <motion.div animate={isInView ? { rotate: [0, -10, 10, 0] } : {}} transition={{ duration: 0.5, delay: 0.3 }}>
+            <step.icon size={22} className={isInView ? "text-primary" : "text-gray-300"} />
+          </motion.div>
+          <h3 className={`font-bold font-[family-name:var(--font-heading)] transition-colors ${isInView ? "text-gray-900" : "text-gray-400"}`}>{step.title}</h3>
+        </div>
+        <p className={`text-sm transition-colors ${isInView ? "text-gray-600" : "text-gray-400"}`}>{step.desc}</p>
+        {step.badge && (
+          <motion.span
+            animate={isInView ? { scale: [1, 1.1, 1] } : {}}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="inline-block mt-3 bg-emerald-100 text-emerald-700 text-xs font-bold px-4 py-1.5 rounded-full"
+          >
+            {step.badge}
+          </motion.span>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function WorkflowTimeline() {
-  const { ref, isInView } = useInView(0.1);
+  const { ref, isInView } = (function() {
+    const ref = useRef<HTMLDivElement>(null);
+    const isInView = useFramerInView(ref, { once: true, amount: 0.1 });
+    return { ref, isInView };
+  })();
 
   return (
     <section id="workflow" ref={ref} className="py-20 sm:py-28 bg-gray-50/50">
@@ -33,41 +86,13 @@ export default function WorkflowTimeline() {
 
         <div className="relative max-w-3xl mx-auto">
           {/* Vertical line */}
-          <div className="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-sky-200 -translate-x-1/2 hidden sm:block" />
-          <div className="absolute left-5 top-0 bottom-0 w-px bg-sky-200 sm:hidden" />
+          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-sky-200 -translate-x-1/2 hidden sm:block" />
+          <div className="absolute left-6 top-0 bottom-0 w-px bg-sky-200 sm:hidden" />
 
-          <div className="space-y-12">
-            {steps.map((step, i) => {
-              const isLeft = i % 2 === 0;
-              return (
-                <motion.div
-                  key={step.title}
-                  initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: i * 0.15, duration: 0.5 }}
-                  className={`relative flex items-start gap-6 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} sm:flex-row`}
-                >
-                  {/* Number circle */}
-                  <div className="relative z-10 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold shrink-0 shadow-md">
-                    {i + 1}
-                  </div>
-
-                  {/* Content */}
-                  <div className={`flex-1 sm:text-left ${isLeft ? "md:text-right" : "md:text-left"} bg-white border border-gray-100 rounded-xl p-6 shadow-sm`}>
-                    <div className={`flex items-center gap-3 mb-2 ${isLeft ? "md:justify-end" : "md:justify-start"} sm:justify-start`}>
-                      <step.icon size={20} className="text-primary" />
-                      <h3 className="font-bold font-[family-name:var(--font-heading)] text-gray-900">{step.title}</h3>
-                    </div>
-                    <p className="text-gray-500 text-sm">{step.desc}</p>
-                    {step.badge && (
-                      <span className="inline-block mt-2 bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">
-                        {step.badge}
-                      </span>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
+          <div className="space-y-16">
+            {steps.map((step, i) => (
+              <StepCard key={step.title} step={step} index={i} isLeft={i % 2 === 0} />
+            ))}
           </div>
         </div>
       </div>
