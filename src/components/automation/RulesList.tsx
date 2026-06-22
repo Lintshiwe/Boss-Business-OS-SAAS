@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, ToggleLeft, ToggleRight, Clock, Trash2, X, Play, Pause } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Plus, ToggleLeft, ToggleRight, Clock, Trash2, X, Play, CheckCircle, AlertCircle } from "lucide-react";
 
 interface Rule { id: string; name: string; trigger: string; isActive: boolean; lastTriggered: string; actions: string[]; runCount: number; }
 
@@ -18,16 +18,47 @@ const triggerLabels: Record<string, string> = {
   "project-created": "Project Created", "schedule-weekly": "Weekly Schedule",
 };
 
+interface Toast { id: string; message: string; type: "success" | "error"; }
+
 export default function RulesList() {
   const [rules, setRules] = useState<Rule[]>(initialRules);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ name: "", trigger: "new-lead", actions: ["send-email"] });
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [runningRule, setRunningRule] = useState<string | null>(null);
+
+  const addToast = useCallback((message: string, type: "success" | "error" = "success") => {
+    const id = String(Date.now());
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
+  }, []);
 
   const toggleRule = (id: string) => setRules(prev => prev.map(r => r.id === id ? { ...r, isActive: !r.isActive } : r));
   const deleteRule = (id: string) => setRules(prev => prev.filter(r => r.id !== id));
 
   const testRun = (id: string) => {
-    setRules(prev => prev.map(r => r.id === id ? { ...r, lastTriggered: "Just now", runCount: r.runCount + 1 } : r));
+    const rule = rules.find(r => r.id === id);
+    if (!rule) return;
+
+    if (!rule.isActive) {
+      addToast(`"${rule.name}" is inactive. Enable it first.`, "error");
+      return;
+    }
+
+    setRunningRule(id);
+
+    setTimeout(() => {
+      setRules(prev => prev.map(r => r.id === id ? { ...r, lastTriggered: "Just now", runCount: r.runCount + 1 } : r));
+      const actionLabels = rule.actions.map(a => {
+        const map: Record<string, string> = {
+          "send-email": "Email sent", "move-stage": "Stage updated", "notify-admin": "Admin notified",
+          "create-task": "Task created", "generate-report": "Report generated",
+        };
+        return map[a] || a;
+      });
+      addToast(`Test run complete: ${actionLabels.join(", ")}`);
+      setRunningRule(null);
+    }, 1200);
   };
 
   const createRule = () => {
@@ -78,7 +109,13 @@ export default function RulesList() {
                   <span key={action} className="text-xs bg-sky-50 text-sky-600 px-2 py-0.5 rounded-full">{action}</span>
                 ))}
               </div>
-              <button onClick={() => testRun(rule.id)} className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors" title="Test run"><Play size={14} /></button>
+              <button onClick={() => testRun(rule.id)} disabled={runningRule === rule.id} className={`p-2 rounded-lg transition-colors ${runningRule === rule.id ? "text-sky-500 bg-sky-50 animate-pulse" : "text-gray-400 hover:text-sky-600 hover:bg-sky-50"}`} title="Test run">
+                {runningRule === rule.id ? (
+                  <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                ) : (
+                  <Play size={14} />
+                )}
+              </button>
               <button onClick={() => toggleRule(rule.id)} className={`relative w-12 h-6 rounded-full transition-colors ${rule.isActive ? "bg-sky-500" : "bg-gray-300"}`}>
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform shadow-sm ${rule.isActive ? "translate-x-6" : ""}`} />
               </button>
@@ -116,6 +153,16 @@ export default function RulesList() {
           </div>
         </div>
       )}
+
+      {/* Toast notifications */}
+      <div className="fixed bottom-6 right-6 z-50 space-y-3">
+        {toasts.map((toast) => (
+          <div key={toast.id} className={`flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-lg text-sm font-medium text-white animate-[slideIn_0.3s_ease-out] ${toast.type === "success" ? "bg-emerald-500" : "bg-red-500"}`}>
+            {toast.type === "success" ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+            {toast.message}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
