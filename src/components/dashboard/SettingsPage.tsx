@@ -1,19 +1,59 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Building2, Users, CreditCard, Bell, Shield, Save, Upload, Mail, Globe, Phone, Trash2, Plus, Copy, Check, Eye, EyeOff, Smartphone, Key, Download, FileText, X, AlertTriangle } from "lucide-react";
 
-const initialTeam = [
+// localStorage persistence hook
+function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      if (typeof window === "undefined") return initialValue;
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch {
+      return initialValue;
+    }
+  });
+
+  const setValue = useCallback((value: T | ((prev: T) => T)) => {
+    setStoredValue((prev) => {
+      const newValue = value instanceof Function ? value(prev) : value;
+      try {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(key, JSON.stringify(newValue));
+        }
+      } catch {}
+      return newValue;
+    });
+  }, [key]);
+
+  return [storedValue, setValue];
+}
+
+const defaultTeam = [
   { id: "1", name: "Thabo Mokoena", email: "thabo@bosssaas.co.za", role: "Admin", status: "active" },
   { id: "2", name: "Sarah Johnson", email: "sarah@bosssaas.co.za", role: "Editor", status: "active" },
   { id: "3", name: "David Nkosi", email: "david@bosssaas.co.za", role: "Viewer", status: "invited" },
 ];
 
-const billingHistory = [
+const defaultBillingHistory = [
   { id: "INV-2026-001", date: "2026-06-01", amount: 799, status: "paid", plan: "Studio" },
   { id: "INV-2026-002", date: "2026-05-01", amount: 799, status: "paid", plan: "Studio" },
   { id: "INV-2026-003", date: "2026-04-01", amount: 799, status: "paid", plan: "Studio" },
   { id: "INV-2026-004", date: "2026-03-01", amount: 299, status: "paid", plan: "Solo" },
+];
+
+const defaultNotifications = [
+  { label: "New lead assigned", desc: "Get notified when a new lead is assigned to you", on: true },
+  { label: "Invoice paid", desc: "Get notified when a client pays an invoice", on: true },
+  { label: "Invoice overdue", desc: "Get notified when an invoice is past due", on: true },
+  { label: "Project milestone", desc: "Get notified when a project milestone is reached", on: false },
+  { label: "Weekly summary", desc: "Receive a weekly performance summary", on: false },
+];
+
+const defaultSessions = [
+  { id: "1", device: "Chrome on Windows", lastActive: "Now", current: true },
+  { id: "2", device: "Safari on iPhone", lastActive: "2 hours ago", current: false },
 ];
 
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
@@ -33,43 +73,37 @@ export default function SettingsPage() {
   const [toast, setToast] = useState<string | null>(null);
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
 
-  // Workspace
-  const [workspaceName, setWorkspaceName] = useState("BOSS Digital Agency");
-  const [workspaceEmail, setWorkspaceEmail] = useState("hello@bosssaas.co.za");
-  const [workspacePhone, setWorkspacePhone] = useState("+27 11 234 5678");
-  const [workspaceWebsite, setWorkspaceWebsite] = useState("https://bosssaas.co.za");
-  const [logoPreview, setLogoPreview] = useState<string | null>("/images/logo.png");
+  // Workspace — persisted to localStorage
+  const [workspaceName, setWorkspaceName] = useLocalStorage("boss_ws_name", "BOSS Digital Agency");
+  const [workspaceEmail, setWorkspaceEmail] = useLocalStorage("boss_ws_email", "hello@bosssaas.co.za");
+  const [workspacePhone, setWorkspacePhone] = useLocalStorage("boss_ws_phone", "+27 11 234 5678");
+  const [workspaceWebsite, setWorkspaceWebsite] = useLocalStorage("boss_ws_website", "https://bosssaas.co.za");
+  const [logoPreview, setLogoPreview] = useLocalStorage<string | null>("boss_ws_logo", "/images/logo.png");
   const logoInputRef = useRef<HTMLInputElement>(null);
 
-  // Team
-  const [team, setTeam] = useState(initialTeam);
+  // Team — persisted
+  const [team, setTeam] = useLocalStorage("boss_team", defaultTeam);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("Viewer");
   const [showInvite, setShowInvite] = useState(false);
 
-  // Billing
+  // Billing — persisted
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [invoiceItems, setInvoiceItems] = useState([{ desc: "Studio Plan - Monthly", qty: 1, rate: 799 }]);
-  const [invoiceHistory, setInvoiceHistory] = useState(billingHistory);
-  const [currentPlan, setCurrentPlan] = useState("Studio");
+  const [invoiceHistory, setInvoiceHistory] = useLocalStorage("boss_billing_history", defaultBillingHistory);
+  const [currentPlan, setCurrentPlan] = useLocalStorage("boss_plan", "Studio");
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [confirmRevoke, setConfirmRevoke] = useState<string | null>(null);
   const [confirmSignOutAll, setConfirmSignOutAll] = useState(false);
 
-  // Notifications
-  const [notifPrefs, setNotifPrefs] = useState([
-    { label: "New lead assigned", desc: "Get notified when a new lead is assigned to you", on: true },
-    { label: "Invoice paid", desc: "Get notified when a client pays an invoice", on: true },
-    { label: "Invoice overdue", desc: "Get notified when an invoice is past due", on: true },
-    { label: "Project milestone", desc: "Get notified when a project milestone is reached", on: false },
-    { label: "Weekly summary", desc: "Receive a weekly performance summary", on: false },
-  ]);
+  // Notifications — persisted
+  const [notifPrefs, setNotifPrefs] = useLocalStorage("boss_notif_prefs", defaultNotifications);
 
-  // Security
+  // Security — persisted
   const [showPassword, setShowPassword] = useState(false);
   const [currentPw, setCurrentPw] = useState("");
   const [newPw, setNewPw] = useState("");
-  const [twoFA, setTwoFA] = useState(false);
+  const [twoFA, setTwoFA] = useLocalStorage("boss_2fa", false);
   const [showPasskey, setShowPasskey] = useState(false);
   const [showAuthApp, setShowAuthApp] = useState(false);
   const [totpSecret, setTotpSecret] = useState("");
@@ -77,12 +111,9 @@ export default function SettingsPage() {
   const [totpQrDataUrl, setTotpQrDataUrl] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
   const [verifyError, setVerifyError] = useState("");
-  const [passkeyRegistered, setPasskeyRegistered] = useState(false);
+  const [passkeyRegistered, setPasskeyRegistered] = useLocalStorage("boss_passkey", false);
   const [passkeyError, setPasskeyError] = useState("");
-  const [sessions, setSessions] = useState([
-    { id: "1", device: "Chrome on Windows", lastActive: "Now", current: true },
-    { id: "2", device: "Safari on iPhone", lastActive: "2 hours ago", current: false },
-  ]);
+  const [sessions, setSessions] = useLocalStorage("boss_sessions", defaultSessions);
 
   const tabs = [
     { id: "workspace", label: "Workspace", icon: Building2 },
@@ -129,7 +160,7 @@ export default function SettingsPage() {
     showToast("Invoice generated successfully");
   };
 
-  const downloadInvoice = (inv: typeof billingHistory[0]) => {
+  const downloadInvoice = (inv: typeof defaultBillingHistory[0]) => {
     const content = `
 INVOICE
 =======
@@ -155,7 +186,6 @@ https://bosssaas.co.za
 
   const toggleNotifPref = (index: number) => {
     setNotifPrefs(prev => prev.map((p, i) => i === index ? { ...p, on: !p.on } : p));
-    showToast("Notification preference updated");
   };
 
   const revokeSession = (id: string) => {
@@ -349,11 +379,11 @@ https://bosssaas.co.za
                 </div>
               )}
               <div className="space-y-4">
-                {team.map((member) => (
+                {team.map((member: any) => (
                   <div key={member.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-sm font-bold">
-                        {member.name.split(" ").map(n => n[0]).join("")}
+                        {member.name.split(" ").map((n: string) => n[0]).join("")}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">{member.name}</p>
@@ -393,11 +423,11 @@ https://bosssaas.co.za
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl text-center">
                     <p className="text-xs text-gray-500">Payment method</p>
-                    <p className="text-sm font-semibold text-gray-900">Visa •••• 4242</p>
+                    <p className="text-sm font-semibold text-gray-900">Visa ···· 4242</p>
                   </div>
                   <div className="p-4 bg-gray-50 rounded-xl text-center">
                     <p className="text-xs text-gray-500">YTD spent</p>
-                    <p className="text-sm font-semibold text-gray-900">R {(currentPlan === "Solo" ? 299 : currentPlan === "Studio" ? 799 : 1999 * 6).toLocaleString()}</p>
+                    <p className="text-sm font-semibold text-gray-900">R {(currentPlan === "Solo" ? 299 * 6 : currentPlan === "Studio" ? 799 * 6 : 1999 * 6).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -421,7 +451,7 @@ https://bosssaas.co.za
                     </tr>
                   </thead>
                   <tbody>
-                    {invoiceHistory.map((inv) => (
+                    {invoiceHistory.map((inv: any) => (
                       <tr key={inv.id} className="border-b border-gray-50">
                         <td className="py-3 text-sm font-medium text-gray-900">{inv.id}</td>
                         <td className="py-3 text-sm text-gray-600">{inv.date}</td>
@@ -637,7 +667,7 @@ https://bosssaas.co.za
                   )}
                 </div>
                 <div className="space-y-3">
-                  {sessions.map((session) => (
+                  {sessions.map((session: any) => (
                     <div key={session.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl transition-all duration-300">
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${session.current ? "bg-sky-100 text-sky-600" : "bg-gray-200 text-gray-500"}`}>
