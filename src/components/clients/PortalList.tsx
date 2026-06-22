@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Clock, Plus, Trash2, Copy, Check, X, Eye, EyeOff } from "lucide-react";
 import ColorfulAvatar from "../ui/ColorfulAvatar";
 
@@ -12,12 +12,38 @@ const initialPortals: Portal[] = [
   { id: "3", client: "BuildRight", token: "mno345pqr678", lastAccessed: "Never", access: { invoices: true, projects: true, documents: true }, url: "" },
 ];
 
+const STORAGE_KEY = "boss_portals";
+
+function loadPortals(): Portal[] {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return initialPortals;
+}
+
+function savePortals(portals: Portal[]) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(portals));
+  } catch {}
+}
+
 export default function PortalList() {
   const [portals, setPortals] = useState<Portal[]>(initialPortals);
+  const [loaded, setLoaded] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ client: "", access: { invoices: true, projects: false, documents: false } });
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showTokens, setShowTokens] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setPortals(loadPortals());
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (loaded) savePortals(portals);
+  }, [portals, loaded]);
 
   const generateToken = () => Array.from({ length: 12 }, () => "abcdefghijklmnopqrstuvwxyz0123456789"[Math.floor(Math.random() * 36)]).join("");
 

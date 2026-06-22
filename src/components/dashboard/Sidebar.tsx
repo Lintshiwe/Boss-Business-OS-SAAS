@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard, Users, FolderKanban, FileText,
   BarChart3, Zap, Settings, LogOut, ChevronLeft, ChevronRight
@@ -25,19 +25,27 @@ interface SidebarProps {
 
 export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const currentPath = typeof window !== "undefined" ? (window?.location?.pathname || "/app") : "/app";
+  const [profile, setProfile] = useState({ firstName: "Thabo", lastName: "Mokoena", displayName: "Thabo M.", avatarUrl: "" });
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem("boss_profile");
+      if (stored) setProfile(JSON.parse(stored));
+    } catch {}
+  }, []);
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-full bg-sky-950 text-white flex flex-col transition-all duration-300 z-40",
+        "fixed left-0 top-0 h-full bg-gray-100 text-gray-900 flex flex-col transition-all duration-300 z-40",
         collapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-sky-800/50">
+      <div className="h-16 flex items-center px-4 border-b border-gray-200">
         <img src="/images/logo.png" alt="BOSS" className="h-8 w-auto" />
         {!collapsed && (
-          <span className="ml-2 text-sm font-bold gradient-text">BOSS</span>
+          <span className="ml-2 text-sm font-bold text-gray-900">BOSS</span>
         )}
       </div>
 
@@ -52,8 +60,8 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-sky-500/20 text-white"
-                  : "text-sky-300/70 hover:text-white hover:bg-sky-800/50"
+                  ? "bg-gray-200 text-gray-900"
+                  : "text-gray-500 hover:text-gray-900 hover:bg-gray-200"
               )}
             >
               <item.icon size={20} />
@@ -64,13 +72,13 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* User */}
-      <div className="p-3 border-t border-sky-800/50">
+      <div className="p-3 border-t border-gray-200">
         <div className="flex items-center gap-3">
-          <ColorfulAvatar name="Thabo Mokoena" size="sm" ring />
+          <ColorfulAvatar name={`${profile.firstName} ${profile.lastName}`} size="sm" ring imageSrc={profile.avatarUrl || null} />
           {!collapsed && (
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white truncate">Thabo M.</p>
-              <p className="text-xs text-sky-300/50 truncate">Admin</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{profile.displayName}</p>
+              <p className="text-xs text-gray-400 truncate">Admin</p>
             </div>
           )}
         </div>
@@ -80,14 +88,14 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="p-2 space-y-1">
         <a
           href="/app/settings"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-sky-300/70 hover:text-white hover:bg-sky-800/50 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-200 transition-colors"
         >
           <Settings size={20} />
           {!collapsed && <span>Settings</span>}
         </a>
         <a
           href="/"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-sky-300/70 hover:text-white hover:bg-sky-800/50 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-200 transition-colors"
         >
           <LogOut size={20} />
           {!collapsed && <span>Back to Site</span>}
@@ -97,7 +105,7 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* Collapse toggle */}
       <button
         onClick={onToggle}
-        className="absolute -right-3 top-20 bg-sky-800 border border-sky-700 rounded-full p-1 text-sky-300 hover:text-white"
+        className="absolute -right-3 top-20 bg-gray-200 border border-gray-300 rounded-full p-1 text-gray-500 hover:text-gray-900"
       >
         {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
       </button>

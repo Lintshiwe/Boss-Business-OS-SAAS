@@ -62,6 +62,30 @@ const statusStyles: Record<string, string> = {
   Completed: "bg-sky-100 text-sky-600",
 };
 
+const STORAGE_KEY = "boss_portals";
+
+function loadPortalData(token: string): PortalData | null {
+  // Check dynamically-created portals from localStorage first
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const portals = JSON.parse(stored);
+      const match = portals.find((p: any) => p.token === token);
+      if (match) {
+        return {
+          client: match.client,
+          access: match.access,
+          invoices: [],
+          projects: [],
+          documents: [],
+        };
+      }
+    }
+  } catch {}
+  // Fall back to hardcoded database
+  return portalDatabase[token] || null;
+}
+
 export default function PortalView() {
   const [token, setToken] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"invoices" | "projects" | "documents">("invoices");
@@ -82,7 +106,7 @@ export default function PortalView() {
     );
   }
 
-  if (!token || !portalDatabase[token]) {
+  if (!token || !loadPortalData(token)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -97,7 +121,7 @@ export default function PortalView() {
     );
   }
 
-  const data = portalDatabase[token];
+  const data = loadPortalData(token)!;
   const tabs = [
     { key: "invoices" as const, label: "Invoices", icon: FileText, available: data.access.invoices },
     { key: "projects" as const, label: "Projects", icon: FolderKanban, available: data.access.projects },
